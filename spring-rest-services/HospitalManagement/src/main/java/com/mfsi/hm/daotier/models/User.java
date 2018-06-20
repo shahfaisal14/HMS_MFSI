@@ -3,10 +3,14 @@
  */
 package com.mfsi.hm.daotier.models;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -21,6 +25,7 @@ import lombok.Data;
  */
 @Entity
 @Data
+@Inheritance(strategy=InheritanceType.JOINED)
 public class User extends BaseDataModel {
 
 	@Transient
@@ -53,5 +58,11 @@ public class User extends BaseDataModel {
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	@JoinColumn(name="role", nullable= false)
 	private Role role;
+	
+	public User() {}
+	
+	public User(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX, Long versionNumber) {
+		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);
+	}
 
 }

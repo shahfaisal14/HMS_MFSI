@@ -6,17 +6,13 @@ package com.mfsi.hm.daotier.repositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.mfsi.hm.daotier.models.Token;
+import com.mfsi.hm.daotier.models.Email;
 
 /**
  * @author shah
  *
  */
 @Repository
-public interface TokenRepository extends CrudRepository<Token, Long>{
-
-	public Token findByToken(String authToken);
-
-	public void deleteByToken(String authToken);
-
+public interface EmailRepository extends CrudRepository<Email, Long> {
+	public Email findByIsActive(Boolean isActive);
 }

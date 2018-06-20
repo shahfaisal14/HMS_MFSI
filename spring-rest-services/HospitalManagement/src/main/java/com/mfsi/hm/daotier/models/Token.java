@@ -30,6 +30,11 @@ public class Token extends BaseDataModel {
 	@Column(name="token", nullable=false, length=60)
 	private String token;
 
+	@SuppressWarnings("unused")
+	private Token() {
+		
+	}
+	
 	public Token(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX, Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);
 	}

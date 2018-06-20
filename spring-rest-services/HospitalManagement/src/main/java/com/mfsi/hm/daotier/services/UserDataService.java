@@ -27,4 +27,9 @@ public interface UserDataService {
 	public LoginAttempts save(LoginAttempts loginAttempts);
 
 	public Role getRole(String userCode);
+	
+	public Token findByToken(String authToken);
+
+	public void deleteToken(String authToken);
+	
 }

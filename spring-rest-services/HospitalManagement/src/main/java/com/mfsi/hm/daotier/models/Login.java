@@ -50,6 +50,10 @@ public class Login extends BaseDataModel {
 	@Column(name = "secretKey", nullable = true, length = 100)
 	private String secretKey;
 	
+	public Login(){
+		
+	}
+	
 	public Login(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX,
 			Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);

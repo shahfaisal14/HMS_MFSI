@@ -38,6 +38,8 @@ public class Role extends BaseDataModel {
 		inverseJoinColumns = {@JoinColumn(name = "modules")})
 	private Set<Module> modules;
 	
+	public Role() {}
+	
 	public Role(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX, Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);
 	}

@@ -4,6 +4,7 @@
 package com.mfsi.hm.biztier.vos;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Transient;
 
@@ -32,6 +33,8 @@ public class UserVO implements Serializable {
 	private String password;
 		
 	private String email;
+	
+	private String dateOfBirth;
 		
 	private RoleVO role;
 			
