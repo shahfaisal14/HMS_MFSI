@@ -8,12 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.mfsi.hm.biztier.vos.TokenValidationVO;
 import com.mfsi.hm.core.exceptions.TokenException;
 import com.mfsi.hm.core.responses.ResponseType;
 import com.mfsi.hm.core.responses.RestResponseVO;
@@ -27,10 +25,10 @@ public class BaseController {
 
 	public static Logger LOGGER = LogManager.getLogger(BaseController.class);
 	
-	@Autowired
-	BaseHelper baseHelper;
-	
-	public TokenValidationVO validateToken(String authToken, HttpServletRequest request){
+//	@Autowired
+//	BaseHelper baseHelper;
+//	
+//	public TokenValidationVO validateToken(String authToken, HttpServletRequest request){
 //		HttpSession session = request.getSession(false);
 //		if(session != null){
 //			String sessionToken = (String) session.getAttribute(USER_SESSION_TOKEN);
@@ -42,8 +40,7 @@ public class BaseController {
 //		} else {
 //			throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_EXCEPTION, null, APP_LOCALE));
 //		}
-		return baseHelper.getUserDetails(authToken);
-	}
+//	}
 	
 	@ExceptionHandler(value = Throwable.class)
 	public ResponseEntity<RestResponseVO> defaultErrorHandler(HttpServletRequest httpServletRequest, Throwable e) throws Throwable {

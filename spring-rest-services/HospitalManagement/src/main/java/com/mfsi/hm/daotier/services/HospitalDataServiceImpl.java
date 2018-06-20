@@ -35,7 +35,7 @@ public class HospitalDataServiceImpl implements HospitalDataService {
 	public Hospital findByName(String name){
 		Hospital hospital = null;
 		if(StringUtils.isNotBlank(name)){
-			hospital = hospitalRepository.findByName();
+			hospital = hospitalRepository.findByName(name);
 		}
 		return hospital;
 	}

@@ -6,23 +6,25 @@ package com.mfsi.hm.daotier.models;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 import com.mfsi.hm.core.common.BaseDataModel;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author shah
  *
  */
 @Data
+@Entity
+@NoArgsConstructor
 public class Email extends BaseDataModel {
 
 	@Transient
 	private static final long serialVersionUID = -7022742196094404368L;
-
-	public Email() {}
 	
 	public Email(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX, Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);

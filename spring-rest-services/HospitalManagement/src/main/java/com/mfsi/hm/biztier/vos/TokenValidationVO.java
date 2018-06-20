@@ -12,12 +12,12 @@ import lombok.Data;
 @Data
 public class TokenValidationVO {
 	
-	private String message = null;
+	private String message;
 	
-	private String responseType = null;
+	private String responseType ;
 	
-	private UserVO user = null;
+	private UserVO user ;
 	
-	private String errorCode = null;
+	private String errorCode;
 
 }

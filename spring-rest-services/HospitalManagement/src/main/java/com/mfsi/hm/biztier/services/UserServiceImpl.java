@@ -73,7 +73,7 @@ import com.mfsi.hm.daotier.services.UserDataService;
  * @author shah
  *
  */
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
 	@Autowired
