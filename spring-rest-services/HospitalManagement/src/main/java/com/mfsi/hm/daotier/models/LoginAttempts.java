@@ -23,6 +23,11 @@ public class LoginAttempts extends BaseDataModel {
 	@Column(name = "wrongAttempts", nullable = false, length = 2)
 	private Long wrongAttempts;
 	
+	@SuppressWarnings("unused")
+	private LoginAttempts() {
+		
+	}
+	
 	public LoginAttempts(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate,
 			String systemOfRecordX, Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);

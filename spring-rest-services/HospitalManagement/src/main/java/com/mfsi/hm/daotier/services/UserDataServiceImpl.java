@@ -3,6 +3,7 @@
  */
 package com.mfsi.hm.daotier.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class UserDataServiceImpl implements UserDataService {
 	public Token getToken(String authToken) {
 		Token token = null;
 		
-		if(authToken != null && authToken.isEmpty()){
+		if(authToken != null && !authToken.isEmpty()){
 			token = tokenRepository.findByToken(authToken);
 		}
 		return token;
@@ -77,7 +78,7 @@ public class UserDataServiceImpl implements UserDataService {
 			if(login == null){
 				LOGGER.debug("No Login information found in database for userId: " + userId);
 			}
-		}		
+		}
 		return login;
 	}
 	
@@ -132,5 +133,21 @@ public class UserDataServiceImpl implements UserDataService {
 			}
 		}
 		return roles;
+	}
+	
+	@Override
+	public Token findByToken(String authToken) {
+		Token token = null;
+		if(StringUtils.isNoneBlank(authToken)){
+			token = tokenRepository.findByToken(authToken);
+		}
+		return token;
+	}
+	
+	@Override
+	public void deleteToken(String authToken) {
+		if(StringUtils.isNoneBlank(authToken)){
+			tokenRepository.deleteByToken(authToken);
+		}
 	}
 }

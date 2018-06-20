@@ -57,6 +57,11 @@ public class Module extends BaseDataModel {
 	@Column(name = "canRead", nullable = true)
 	private Boolean canRead;
 	
+	@SuppressWarnings("unused")
+	private Module() {
+		
+	}
+	
 	public Module(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX, Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);
 	}

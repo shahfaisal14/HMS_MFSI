@@ -56,4 +56,13 @@ public class StringHelper {
 		}
 		return result;
 	}
+	
+	/**
+	 *  @return true if first String is bigger than second
+	 */
+	public static Boolean compare(String first, String second){
+		if(first.compareTo(second) > 0)
+			return true;
+		return false;
+	}
 }

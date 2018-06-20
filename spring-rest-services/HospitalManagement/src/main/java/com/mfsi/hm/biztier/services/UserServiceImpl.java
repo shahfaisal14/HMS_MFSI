@@ -3,8 +3,36 @@
  */
 package com.mfsi.hm.biztier.services;
 
-import static com.mfsi.hm.core.common.Constants.*;
+import static com.mfsi.hm.core.common.Constants.APP_LOCALE;
+import static com.mfsi.hm.core.common.Constants.CHANGE_PASSWORD_MAIL_FAILURE;
+import static com.mfsi.hm.core.common.Constants.CHANGE_PASSWORD_MAIL_SUCCESS;
+import static com.mfsi.hm.core.common.Constants.ERROR_CODE_ACCESS_DENIED;
+import static com.mfsi.hm.core.common.Constants.ERROR_CODE_INVALID_CREDENTIALS;
+import static com.mfsi.hm.core.common.Constants.ERROR_CODE_TOKEN_EXCEPTION;
+import static com.mfsi.hm.core.common.Constants.ERROR_CODE_USER_LOGIN;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_ACCESS_DENIED;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_INVALID_CREDENTIALS;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_TOKEN_EXIST;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_TOKEN_USER_ACTIVE;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_TOKEN_USER_EXIST;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_TOKEN_USER_TERMINATED;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_USER_LOGIN_FAILURE;
+import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_USER_LOGIN_TOKEN_ISSUE;
+import static com.mfsi.hm.core.common.Constants.FORGOT_PASSWORD_BODY;
+import static com.mfsi.hm.core.common.Constants.FORGOT_PASSWORD_SUBJECT;
+import static com.mfsi.hm.core.common.Constants.IS_ACTIVE_USER;
+import static com.mfsi.hm.core.common.Constants.MAX_LOGIN_ATTEMPTS;
+import static com.mfsi.hm.core.common.Constants.PASSWORD_CHANGED_FAILURE;
+import static com.mfsi.hm.core.common.Constants.PASSWORD_CHANGED_SUCCESS;
+import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
+import static com.mfsi.hm.core.common.Constants.TEMP_CODE_EXPIRY_TIME;
+import static com.mfsi.hm.core.common.Constants.USER_CREATE_ERROR;
+import static com.mfsi.hm.core.common.Constants.USER_CREATE_SUCCESS;
+import static com.mfsi.hm.core.common.Constants.USER_LOGGED_OUT;
+import static com.mfsi.hm.core.common.Constants.VERSION_NUMBER;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,7 +41,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +59,7 @@ import com.mfsi.hm.core.exceptions.UserLoginException;
 import com.mfsi.hm.core.responses.BizResponseVO;
 import com.mfsi.hm.core.responses.ResponseType;
 import com.mfsi.hm.core.util.StringHelper;
+import com.mfsi.hm.core.util.SystemUtil;
 import com.mfsi.hm.daotier.models.Configuration;
 import com.mfsi.hm.daotier.models.Login;
 import com.mfsi.hm.daotier.models.LoginAttempts;
@@ -48,15 +76,17 @@ import com.mfsi.hm.daotier.services.UserDataService;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private static final Long VERSION = null;
-
 	@Autowired
 	private UserDataService userDataService;
 	
 	@Autowired
 	private CoreService coreService;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	private Long maxAttemps = 10L;
+	private Long tempAuthCodeExpiryTime = 9000000L;
 	
 	@Override
 	public BizResponseVO validateToken(String authToken) {
@@ -68,7 +98,7 @@ public class UserServiceImpl implements UserService {
 			Role role = user != null ? user.getRole() : null;
 			
 			if(user != null & role != null){
-				if(user.getIsTerminated()){
+				if(!user.getIsTerminated()){
 					if(user.getIsActive()){
 						UserVO userVO = convertUserModelToVO(user);
 						bizResponse.setResponseType(ResponseType.SUCCESS);
@@ -132,22 +162,161 @@ public class UserServiceImpl implements UserService {
 					bizResponse.setResponseType(ResponseType.SUCCESS);
 					bizResponse.setResponseData(loginSuccessVO);
 					bizResponse.setMessage(validateUser.getMessage());
-					if(StringUtils.isNoneBlank(validateUser.getAuthToken())){
-						// TODO: Audit stuff
-					}
 				} else {
-					throw new UserLoginException(ERROR_CODE_USER_LOGIN, SpringHelper.getMessage(ERROR_MESSAGE_USER_LOGIN_FAILURE, null, APP_LOCALE));
+					throw new UserLoginException(ERROR_CODE_USER_LOGIN, 
+							SpringHelper.getMessage(ERROR_MESSAGE_USER_LOGIN_FAILURE, null, APP_LOCALE));
 				}
 
 			} else{
-				throw new AccessDeniedException(ERROR_CODE_ACCESS_DENIED, SpringHelper.getMessage(ERROR_MESSAGE_ACCESS_DENIED, null, APP_LOCALE));
+				throw new AccessDeniedException(ERROR_CODE_ACCESS_DENIED, 
+						SpringHelper.getMessage(ERROR_MESSAGE_ACCESS_DENIED, null, APP_LOCALE));
 			}
 		} else {
-			throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+			throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+					SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
 		}
 		
 		
 		return bizResponse;
+	}
+	
+	@Override
+	public BizResponseVO createUser(UserVO loggedInUser, UserVO userVO) {
+		
+		BizResponseVO response = new BizResponseVO();
+		User user = convertUserVOToModel(userVO, loggedInUser.getUserId());
+		
+		user.setIsActive(IS_ACTIVE_USER);
+		user.setIsTerminated(false);
+		user.setUserId(user.getEmail());
+		
+		User createdUser = userDataService.saveUser(user);
+		
+		if(createdUser != null){
+			response.setResponseType(ResponseType.SUCCESS);
+			response.setMessage(USER_CREATE_SUCCESS);
+			response.setResponseData(createdUser.getDataStoreId());
+		} else {
+			response.setResponseType(ResponseType.ERROR);
+			response.setMessage(USER_CREATE_ERROR);
+		}
+		
+		return response;
+	}
+
+	@Override
+	public BizResponseVO forgotPassword(String userId) {
+		BizResponseVO bizResponse = new BizResponseVO();
+
+		Login login = userDataService.getLogin(userId);
+		if (login != null) {
+			
+			Boolean isMailSent = Boolean.FALSE;			
+			String tempAuthCode = StringHelper.randomString(20, Boolean.FALSE, Boolean.FALSE);
+
+			login.setTempAuthCode(tempAuthCode);
+			Configuration configuration = coreService.findByConfiguration(TEMP_CODE_EXPIRY_TIME);
+			if(configuration != null && configuration.getValue() != null){
+				tempAuthCodeExpiryTime = Long.parseLong(configuration.getValue());
+			}
+			login.setExpiryDuration(tempAuthCodeExpiryTime);
+			login.setAuthCodeCreatedTime(new Date());
+
+			Login loginObject = userDataService.saveLogin(login);
+			if(loginObject != null){
+				User user = loginObject.getUser(); 
+				
+				String subject = SpringHelper.getMessage(FORGOT_PASSWORD_SUBJECT, null, APP_LOCALE);
+				Object []values = {getUserName(login), tempAuthCode};
+				String emailBody = SpringHelper.getMessage(FORGOT_PASSWORD_BODY, values, APP_LOCALE);
+				String []toEmails = {user.getEmail()};
+				isMailSent = emailService.sendEMail(toEmails, subject, emailBody);
+				
+				if (Boolean.TRUE.equals(isMailSent)) {
+					bizResponse.setResponseType(ResponseType.SUCCESS);
+					bizResponse.setMessage(SpringHelper.getMessage(CHANGE_PASSWORD_MAIL_SUCCESS, null, APP_LOCALE));
+				} else {
+					bizResponse.setResponseType(ResponseType.ERROR);
+					bizResponse.setMessage(SpringHelper.getMessage(CHANGE_PASSWORD_MAIL_FAILURE, null, APP_LOCALE));
+				}
+			} else {
+				bizResponse.setResponseType(ResponseType.ERROR);
+				bizResponse.setMessage(SpringHelper.getMessage(PASSWORD_CHANGED_FAILURE, null, APP_LOCALE));
+			}
+		} else {
+			throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+					SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+		} 
+
+		return bizResponse;
+	}
+
+	@Override
+	public BizResponseVO resetPassword(String userId, String password)
+			throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		BizResponseVO bizResponse = new BizResponseVO();
+		Login login = null;
+		login = userDataService.getLogin(userId);
+		if (login != null) {
+			login.setPassword(DigestUtils.sha256Hex(password + login.getPassSalt()));
+			login.setTempAuthCode(null);
+			login.setExpiryDuration(null);
+			Login loginObject = userDataService.saveLogin(login);
+			if(loginObject != null){
+				bizResponse.setResponseType(ResponseType.SUCCESS);
+				bizResponse.setMessage(SpringHelper.getMessage(PASSWORD_CHANGED_SUCCESS, null, APP_LOCALE));
+			} else {
+				bizResponse.setResponseType(ResponseType.ERROR);
+				bizResponse.setMessage(SpringHelper.getMessage(PASSWORD_CHANGED_FAILURE, null, APP_LOCALE));
+			}
+		} else {
+			throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+					SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+		}
+		return bizResponse;
+	}
+
+	@Override
+	public BizResponseVO changePassword(String userId, String oldPassword, String newPassword)
+			throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		BizResponseVO bizResponse = new BizResponseVO();
+		Login login = null;
+		login = userDataService.getLogin(userId);
+		if (login != null) {
+			if (DigestUtils.sha256Hex(oldPassword + login.getPassSalt()).equals(login.getPassword())) {
+				login.setPassword(DigestUtils.sha256Hex(newPassword + login.getPassSalt()));
+				Login loginObject = userDataService.saveLogin(login);
+				if(loginObject != null){
+					bizResponse.setResponseType(ResponseType.SUCCESS);
+					bizResponse.setMessage(PASSWORD_CHANGED_SUCCESS);
+				} else {
+					bizResponse.setResponseType(ResponseType.ERROR);
+					bizResponse.setMessage(PASSWORD_CHANGED_FAILURE);
+				}
+			} else {
+				throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+						SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+			}
+		} else {
+			throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+					SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+		}
+		return bizResponse;
+	}
+
+	@Override
+	public BizResponseVO doLogout(String authToken, String userName) {
+		BizResponseVO bizResponse = new BizResponseVO();
+		Token token = userDataService.findByToken(authToken);
+		if(token != null){
+			userDataService.deleteToken(authToken);
+			bizResponse.setMessage(SpringHelper.getMessage(USER_LOGGED_OUT, null, APP_LOCALE));
+			bizResponse.setResponseType(ResponseType.SUCCESS);
+			return bizResponse;
+		} else{
+			throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+					SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+		}
 	}
 	
 	private UserVO convertUserModelToVO(User user){
@@ -165,13 +334,39 @@ public class UserServiceImpl implements UserService {
 		return userVO;
 	}
 	
+	private User convertUserVOToModel(UserVO userVO, String loggedInUserId){
+		User user = null;
+		if (userVO != null) {
+			user = new User();
+			user.setDataStoreId(userVO.getDataStoreId());
+			user.setFirstName(userVO.getFirstName());
+			user.setMiddleName(userVO.getMiddleName());
+			user.setLastName(userVO.getLastName());
+			user.setUserId(userVO.getUserId());
+			user.setEmail(userVO.getEmail());
+			user.setRole(convertRoleVOToModel(userVO.getRole(), loggedInUserId));
+		}
+		SystemUtil.setBaseModelValues(user, loggedInUserId, SYSTEM_OF_RECORDX);
+		return user;
+	}
+	
 	private RoleVO convertRoleModelToVO(Role role){
 		RoleVO roleVO = new RoleVO();
 		if(role != null){
-			role.getName();
-			role.getRoleId();
+			roleVO.setName(role.getName());
+			roleVO.setId(role.getRoleId());
 		}
 		return roleVO;
+	}
+	
+	private Role convertRoleVOToModel(RoleVO roleVO, String loggedInUserId){
+		Role role = new Role();
+		if(roleVO != null){
+			role.setName(roleVO.getName());
+			role.setRoleId(roleVO.getId());
+		}
+		SystemUtil.setBaseModelValues(role, loggedInUserId, SYSTEM_OF_RECORDX);
+		return role;
 	}
 	
 	private LoginSuccessVO convertLoginSuccessVOToModel(ValidateUserVO validatedUser, Login login) {
@@ -259,11 +454,13 @@ public class UserServiceImpl implements UserService {
 				String authToken = generateToken(userId);
 				validatedUser.setAuthToken(authToken);
 			} else{
-				throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
+				throw new InvalidCredentialsException(ERROR_CODE_INVALID_CREDENTIALS, 
+						SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS, null, APP_LOCALE));
 			}
 			
 		} else {
-			UserLoginException exception = new UserLoginException(ERROR_CODE_USER_LOGIN, SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS,	 null, APP_LOCALE));
+			UserLoginException exception = new UserLoginException(ERROR_CODE_USER_LOGIN, 
+					SpringHelper.getMessage(ERROR_MESSAGE_INVALID_CREDENTIALS,	 null, APP_LOCALE));
 			Configuration configuration = coreService.findByConfiguration(MAX_LOGIN_ATTEMPTS);
 			if(configuration != null && configuration.getValue() != null){
 				maxAttemps = Long.parseLong(configuration.getValue());
@@ -279,8 +476,8 @@ public class UserServiceImpl implements UserService {
 				loginAttempts.setModifiedDate(currentDate);
 				loginAttempts.setWrongAttempts(currentAttempt);
 				userDataService.save(loginAttempts);
-			}else{
-				loginAttempts = new LoginAttempts(userId, userId, currentDate, currentDate, SYSTEM_OF_RECORDX, VERSION);
+			} else {
+				loginAttempts = new LoginAttempts(userId, userId, currentDate, currentDate, SYSTEM_OF_RECORDX, VERSION_NUMBER);
 				loginAttempts.setUserId(userId);
 				loginAttempts.setWrongAttempts(1L);
 				userDataService.save(loginAttempts);
@@ -296,16 +493,17 @@ public class UserServiceImpl implements UserService {
 		if(saveToken(authToken, userId) != null)
 			return authToken;
 		else
-			throw new UserLoginException(ERROR_CODE_USER_LOGIN, SpringHelper.getMessage(ERROR_MESSAGE_USER_LOGIN_TOKEN_ISSUE, null, APP_LOCALE));
+			throw new UserLoginException(ERROR_CODE_USER_LOGIN, 
+					SpringHelper.getMessage(ERROR_MESSAGE_USER_LOGIN_TOKEN_ISSUE, null, APP_LOCALE));
 	}
 	
 	private Token saveToken(String authToken, String userId) {
 		Date currentDate = new Date();
-		Token token = new Token(userId, userId, currentDate, currentDate, SYSTEM_OF_RECORDX, VERSION);
+		Token token = new Token(userId, userId, currentDate, currentDate, SYSTEM_OF_RECORDX, VERSION_NUMBER);
 		token.setUserId(userId);
 		token.setToken(authToken);
 		token = userDataService.saveToken(token);
 		return token;
 	}
-	
+
 }
