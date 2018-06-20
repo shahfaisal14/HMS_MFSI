@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 import com.mfsi.hm.biztier.services.UserService;
 import com.mfsi.hm.biztier.vos.LoginVO;
 import com.mfsi.hm.biztier.vos.RoleAccessLevel;
+import com.mfsi.hm.biztier.vos.TokenValidationVO;
 import com.mfsi.hm.biztier.vos.UserVO;
 import com.mfsi.hm.configuration.SpringHelper;
 import com.mfsi.hm.core.exceptions.AccessDeniedException;
@@ -42,6 +42,24 @@ public class UserHelper {
 	
 	@Autowired
 	private UserService userService;
+	
+	public TokenValidationVO getUserDetails(String authToken){
+		TokenValidationVO validation = new TokenValidationVO();
+		
+		BizResponseVO bizResponse = userService.validateToken(authToken);
+		
+		if(ResponseType.SUCCESS.equals(bizResponse.getResponseType())){
+			validation.setResponseType(bizResponse.getResponseType().toString());
+			UserVO userData = (UserVO) bizResponse.getResponseData();
+			validation.setUser(userData);
+		} else {
+			validation.setResponseType(bizResponse.getResponseType().toString());
+			validation.setMessage(bizResponse.getMessage());
+			validation.setErrorCode(bizResponse.getErrorCode());
+		}
+		
+		return validation;
+	}
 
 	public RestResponseVO doLogin(LoginVO loginVO) {
 		RestResponseVO response = new RestResponseVO();

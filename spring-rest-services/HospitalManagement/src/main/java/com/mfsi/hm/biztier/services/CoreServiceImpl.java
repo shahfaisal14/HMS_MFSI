@@ -13,7 +13,7 @@ import com.mfsi.hm.daotier.services.CoreDataService;
  * @author shah
  *
  */
-@Service
+@Service("coreService")
 public class CoreServiceImpl implements CoreService {
 
 	@Autowired

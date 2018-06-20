@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mfsi.hm.biztier.vos.LoginVO;
-import com.mfsi.hm.biztier.vos.TokenValidationVO;
 import com.mfsi.hm.biztier.vos.UserVO;
 import com.mfsi.hm.core.common.BaseController;
+import com.mfsi.hm.core.filters.LoggedInUserContext;
 import com.mfsi.hm.core.responses.ResponseType;
 import com.mfsi.hm.core.responses.RestResponseVO;
 import com.mfsi.hm.webtier.helpers.UserHelper;
@@ -40,7 +40,7 @@ public class UserController extends BaseController {
 	
 	
 	@RequestMapping(value="/doLogin", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RestResponseVO> doLogin(HttpServletRequest httpServletRequest, @RequestBody LoginVO loginVO) {
+	public ResponseEntity<RestResponseVO> doLogin(@RequestBody LoginVO loginVO) {
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO responseVO = null;
 		
@@ -51,15 +51,12 @@ public class UserController extends BaseController {
 	}
 	
 	@RequestMapping(value="/create", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RestResponseVO> createUser(HttpServletRequest request,
-			@RequestHeader(value="X-Auth-Token", required=true) String authToken,
-			@RequestBody UserVO userVO){
+	public ResponseEntity<RestResponseVO> createUser(@RequestBody UserVO userVO){
 		
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO responseVO = null;
 		
-		TokenValidationVO validation = validateToken(authToken, request);
-		UserVO loggedInUser = validation.getUser();
+		UserVO loggedInUser = LoggedInUserContext.getUser();
 		
 		responseVO = userHelper.createUser(loggedInUser, userVO);
 		response = new ResponseEntity<RestResponseVO>(responseVO, HttpStatus.OK);
@@ -68,23 +65,21 @@ public class UserController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
-	public ResponseEntity<RestResponseVO> resetPassword(HttpServletRequest request, 
-			@RequestHeader(value = "X-Auth-Token", required = true) String token, 
-			@RequestParam(value = "password", required = true) String password) 
+	public ResponseEntity<RestResponseVO> resetPassword(@RequestParam(value = "password", required = true) String password) 
 					throws NoSuchAlgorithmException, UnsupportedEncodingException{
 
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO responseVO = null;
 
-		TokenValidationVO tokenValidation = validateToken(token, request);
-		responseVO = userHelper.resetPassword(tokenValidation.getUser().getUserId(), password);
+		UserVO loggedInUser = LoggedInUserContext.getUser();
+		responseVO = userHelper.resetPassword(loggedInUser.getUserId(), password);
 
 		response = new ResponseEntity<RestResponseVO>(responseVO, HttpStatus.OK);
 		return response;
 	}
 	
-	@RequestMapping(value = "/forgotPassword", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RestResponseVO> forgotPassword(HttpServletRequest request, @RequestParam(value = "userId", required = true) String userId) {
+	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RestResponseVO> forgotPassword(@RequestParam(value = "userId", required = true) String userId) {
 
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO userResponseVO = userHelper.forgotPassword(userId);
@@ -93,17 +88,15 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
-	public ResponseEntity<RestResponseVO> changePassword(HttpServletRequest request, 
-			@RequestHeader(value = "X-Auth-Token", required = true) String token, 
-			@RequestParam(value = "oldPassword", required = true) String oldPassword,
+	public ResponseEntity<RestResponseVO> changePassword(@RequestParam(value = "oldPassword", required = true) String oldPassword,
 			@RequestParam(value = "newPassword", required = true) String newPassword) 
 					throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO responseVO = null;
 
-		TokenValidationVO tokenValidation = validateToken(token, request);
-		responseVO = userHelper.changePassword(tokenValidation.getUser().getUserId(), oldPassword, newPassword);
+		UserVO loggedInUser = LoggedInUserContext.getUser();
+		responseVO = userHelper.changePassword(loggedInUser.getUserId(), oldPassword, newPassword);
 
 		response = new ResponseEntity<RestResponseVO>(responseVO, HttpStatus.OK);
 		return response;
@@ -115,10 +108,9 @@ public class UserController extends BaseController {
 
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO responseVO = null;
-		try{
-			validateToken(token, request);
+		try {
 			responseVO = userHelper.doLogout(token, request);
-		}catch(Exception exception){
+		} catch (Exception exception){
 			responseVO = new RestResponseVO();
 			responseVO.setResponseType(ResponseType.SUCCESS);
 		}
