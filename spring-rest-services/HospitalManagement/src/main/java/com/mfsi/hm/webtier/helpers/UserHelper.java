@@ -4,9 +4,7 @@
 package com.mfsi.hm.webtier.helpers;
 
 import static com.mfsi.hm.core.common.Constants.APP_LOCALE;
-import static com.mfsi.hm.core.common.Constants.ERROR_CODE_ACCESS_LEVEL;
 import static com.mfsi.hm.core.common.Constants.ERROR_CODE_INVALID_CREDENTIALS;
-import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_ACCESS_LEVEL_USER_CREATE;
 import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_INVALID_CREDENTIALS;
 import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_PARAM_EXCEPTION;
 
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import com.mfsi.hm.biztier.services.UserService;
 import com.mfsi.hm.biztier.vos.LoginVO;
-import com.mfsi.hm.biztier.vos.RoleAccessLevel;
 import com.mfsi.hm.biztier.vos.TokenValidationVO;
 import com.mfsi.hm.biztier.vos.UserVO;
 import com.mfsi.hm.configuration.SpringHelper;
@@ -31,7 +28,6 @@ import com.mfsi.hm.core.exceptions.RequiredParameterException;
 import com.mfsi.hm.core.responses.BizResponseVO;
 import com.mfsi.hm.core.responses.ResponseType;
 import com.mfsi.hm.core.responses.RestResponseVO;
-import com.mfsi.hm.core.util.StringHelper;
 
 /**
  * @author shah
@@ -79,15 +75,13 @@ public class UserHelper {
 	}
 
 	public RestResponseVO createUser(UserVO loggedInUser, UserVO userVO) {
-		RestResponseVO response = new RestResponseVO();
-		boolean isValidUserCreateRequest = validateUserCreateRequest(loggedInUser, userVO);
 		
-		if(isValidUserCreateRequest){
-			BizResponseVO bizResponse = userService.createUser(loggedInUser, userVO);
-			response.setResponseType(bizResponse.getResponseType());
-			response.setMessage(bizResponse.getMessage());
-			response.setResponseData(bizResponse.getResponseData());
-		}
+		RestResponseVO response = new RestResponseVO();
+		BizResponseVO bizResponse = userService.createUser(loggedInUser, userVO);
+		
+		response.setResponseType(bizResponse.getResponseType());
+		response.setMessage(bizResponse.getMessage());
+		response.setResponseData(bizResponse.getResponseData());
 		
 		return response;
 	}
@@ -162,19 +156,20 @@ public class UserHelper {
 		return response;
 	}
 	
-	private boolean validateUserCreateRequest(UserVO loggedInUser, UserVO userVO) {
-		
-		String loggedInUserAccessLevel 	= RoleAccessLevel.getAccessLevelFromRoleName(loggedInUser.getRole().getName());
-		String newUserAccessLevel 		= RoleAccessLevel.getAccessLevelFromRoleName(userVO.getRole().getName());
+	/**
+	 * 
+	 * @param userVO
+	 * @param loggedInUser
+	 * @return boolean
+	 * @throws AccessDeniedException
+	 * @throws RequiredParameterException
+	 */
+	protected boolean validateUser(UserVO userVO) {
 		
 		if(userVO.getRole() == null){
 			Object[] values = { "RoleVO" };
 			throw new RequiredParameterException(ERROR_MESSAGE_PARAM_EXCEPTION, 
 					SpringHelper.getMessage(ERROR_MESSAGE_PARAM_EXCEPTION, values, APP_LOCALE));
-		} else if(StringHelper.compare(newUserAccessLevel, loggedInUserAccessLevel)){ 
-			// If new user access level is higher than logged in user access level
-			throw new AccessDeniedException(ERROR_CODE_ACCESS_LEVEL, 
-					SpringHelper.getMessage(ERROR_MESSAGE_ACCESS_LEVEL_USER_CREATE, null, APP_LOCALE));
 		} else if(StringUtils.isBlank(userVO.getFirstName())){
 			Object[] values = { "firstName" };
 			throw new RequiredParameterException(ERROR_MESSAGE_PARAM_EXCEPTION, 
@@ -187,7 +182,7 @@ public class UserHelper {
 			Object[] values = { "email" };
 			throw new RequiredParameterException(ERROR_MESSAGE_PARAM_EXCEPTION, 
 					SpringHelper.getMessage(ERROR_MESSAGE_PARAM_EXCEPTION, values, APP_LOCALE));
-		} else if(StringUtils.isBlank(userVO.getDateOfBirth())){
+		} else if(userVO.getDateOfBirth() == null){
 			Object[] values = { "dateOfBirth" };
 			throw new RequiredParameterException(ERROR_MESSAGE_PARAM_EXCEPTION, 
 					SpringHelper.getMessage(ERROR_MESSAGE_PARAM_EXCEPTION, values, APP_LOCALE));

@@ -53,6 +53,5 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		} else {
 			return true;
 		}
-		
 	}
 }

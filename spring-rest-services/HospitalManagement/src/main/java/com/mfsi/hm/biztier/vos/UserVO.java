@@ -20,26 +20,56 @@ public class UserVO implements Serializable {
 	@Transient
 	private static final long serialVersionUID = -8753645127744337493L;
 
-	private Long dataStoreId;
+	protected Long dataStoreId;
 	
-	private String userId;
+	protected String userId;
 		
-	private String firstName;
+	protected String firstName;
 	
-	private String middleName;
+	protected String middleName;
 	
-	private String lastName;
-						
-	private String password;
+	protected String lastName;
 		
-	private String email;
+	protected String email;
 	
-	private String dateOfBirth;
+	protected Date dateOfBirth;
 		
-	private RoleVO role;
+	protected RoleVO role;
+	
+	protected String description;
 			
-	private Boolean isActive;
+	protected Boolean isActive;
 	
-	private Boolean isTerminated;
+	protected Boolean isTerminated;
+	
+	public UserVO(){
+		
+	}
+
+	/**
+	 * 
+	 * @param dataStoreId
+	 * @param userId
+	 * @param firstName
+	 * @param middleName
+	 * @param lastName
+	 * @param email
+	 * @param dateOfBirth
+	 * @param role
+	 */
+	public UserVO(Long dataStoreId, String userId, String firstName, String middleName, String lastName,
+			String email, Date dateOfBirth, RoleVO role) {
+		super();
+		this.dataStoreId = dataStoreId;
+		this.userId = userId;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.email = email;
+		this.dateOfBirth = dateOfBirth;
+		this.role = role;
+		this.isActive = true;
+		this.isTerminated = false;
+	}
 	
 }

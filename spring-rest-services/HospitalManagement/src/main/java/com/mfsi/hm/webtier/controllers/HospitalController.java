@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mfsi.hm.biztier.vos.HospitalVO;
@@ -35,9 +36,8 @@ public class HospitalController extends BaseController {
 	public ResponseEntity<RestResponseVO> addHospital(@RequestBody HospitalVO hospitalVO){
 		
 		ResponseEntity<RestResponseVO> response = null;
-		UserVO loggedInUser = LoggedInUserContext.getUser();
 		
-		RestResponseVO restResponseVO = hospitalHelper.addHospital(hospitalVO, loggedInUser.getUserId());
+		RestResponseVO restResponseVO = hospitalHelper.addHospital(hospitalVO);
 		response = new ResponseEntity<RestResponseVO>(restResponseVO, HttpStatus.OK);
 	
 		return response;
@@ -47,9 +47,18 @@ public class HospitalController extends BaseController {
 	public ResponseEntity<RestResponseVO> getHospitalList(@RequestBody FilterInfoVO filterInfoVO) {
 		
 		ResponseEntity<RestResponseVO> response = null;
-		UserVO loggedInUser = LoggedInUserContext.getUser();
 		
-		RestResponseVO restResponseVO = hospitalHelper.getHospitalList(filterInfoVO, loggedInUser.getUserId());
+		RestResponseVO restResponseVO = hospitalHelper.getHospitalList();
+		response = new ResponseEntity<RestResponseVO>(restResponseVO, HttpStatus.OK);
+		
+		return response;
+	}
+	
+	public ResponseEntity<RestResponseVO> getHospitalById(@RequestParam(value="dataStoreId", required=true) Long dataStoreId){
+		
+		ResponseEntity<RestResponseVO> response = null;
+		
+		RestResponseVO restResponseVO = hospitalHelper.getHospitalById(dataStoreId);
 		response = new ResponseEntity<RestResponseVO>(restResponseVO, HttpStatus.OK);
 		
 		return response;

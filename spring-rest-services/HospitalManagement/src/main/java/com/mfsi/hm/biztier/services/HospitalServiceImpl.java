@@ -4,19 +4,20 @@
 package com.mfsi.hm.biztier.services;
 
 import static com.mfsi.hm.core.common.Constants.ERROR_HOSPITAL_SAVE;
-import static com.mfsi.hm.core.common.Constants.IS_ACTIVE_HOSPITAL;
 import static com.mfsi.hm.core.common.Constants.SUCCESS_HOSPITAL_SAVE;
-import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertHospitalModelToVO;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertHospitalVoToModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mfsi.hm.biztier.vos.HospitalVO;
-import com.mfsi.hm.core.pagination.FilterInfoVO;
+import com.mfsi.hm.biztier.vos.UserVO;
 import com.mfsi.hm.core.responses.BizResponseVO;
 import com.mfsi.hm.core.responses.ResponseType;
-import com.mfsi.hm.core.responses.RestResponseVO;
-import com.mfsi.hm.core.util.SystemUtil;
 import com.mfsi.hm.daotier.models.Hospital;
 import com.mfsi.hm.daotier.services.HospitalDataService;
 
@@ -31,12 +32,10 @@ public class HospitalServiceImpl implements HospitalService {
 	private HospitalDataService hospitalDataService;
 
 	@Override
-	public BizResponseVO addHospital(HospitalVO hospitalVO, String userId) {
-		
+	public BizResponseVO addHospital(HospitalVO hospitalVO, UserVO loggedInUser) {
+
 		BizResponseVO response = new BizResponseVO();
-		
-		Hospital hospital = convertHospitalVoToModel(hospitalVO, userId);
-		
+		Hospital hospital = convertHospitalVoToModel(hospitalVO, loggedInUser.getUserId());
 		hospital = hospitalDataService.addHospital(hospital);
 		
 		if(hospital != null){
@@ -50,30 +49,41 @@ public class HospitalServiceImpl implements HospitalService {
 		
 		return response;
 	}
-	
-	private Hospital convertHospitalVoToModel(HospitalVO hospitalVO, String userId){
-		Hospital hospital = new Hospital();
+
+	@Override
+	public BizResponseVO getHospitalsList() {
+		BizResponseVO response = new BizResponseVO();
 		
-		if(hospitalVO != null){
-			hospital.setAddress(hospitalVO.getAddress());
-			hospital.setContact(hospitalVO.getContact());
-			hospital.setEmail(hospitalVO.getEmail());
-			hospital.setName(hospitalVO.getName());
-			hospital.setDepartments(hospitalVO.getDepartments());
-			hospital.setDoctors(hospitalVO.getDoctors());
-			hospital.setLaboratories(hospitalVO.getLaboratories());
-			hospital.setPatients(hospitalVO.getPatients());
-			hospital.setRooms(hospitalVO.getRooms());
-			hospital.setSpeciality(hospitalVO.getSpeciality());
-			hospital.setIsActive(IS_ACTIVE_HOSPITAL);
-			SystemUtil.setBaseModelValues(hospital, userId, SYSTEM_OF_RECORDX);
+		List<Hospital> hospitals = hospitalDataService.getHospitalsList();
+		List<HospitalVO> hospitalsVO = new ArrayList<HospitalVO>();
+		
+		if(hospitals != null){
+			for(Hospital hospital : hospitals){
+				hospitalsVO.add(convertHospitalModelToVO(hospital));
+			}
+			response.setResponseType(ResponseType.SUCCESS);
+			response.setMessage("List of hospitals fetched successfully.");
+			response.setResponseData(hospitalsVO);	
+		} else {
+			response.setResponseType(ResponseType.ERROR);
+			response.setMessage("No record found for hospitals.");
 		}
-		return hospital;
+		return response;
 	}
 
 	@Override
-	public RestResponseVO getHospitalList(FilterInfoVO filterInfoVO) {
-		// TODO Auto-generated method stub
-		return null;
+	public BizResponseVO getHospitalById(Long dataStoreId) {
+		BizResponseVO response = new BizResponseVO();
+		Hospital hospital = hospitalDataService.getHospitalById(dataStoreId);
+		if (hospital != null) {
+			HospitalVO hospitalVO = convertHospitalModelToVO(hospital);
+			response.setResponseType(ResponseType.SUCCESS);
+			response.setMessage("Hospital fetched successfully");
+			response.setResponseData(hospitalVO);
+		} else {
+			response.setResponseType(ResponseType.ERROR);
+			response.setMessage("Hospital is not present for the selected Id: " + dataStoreId);
+		}
+		return response;
 	}
 }

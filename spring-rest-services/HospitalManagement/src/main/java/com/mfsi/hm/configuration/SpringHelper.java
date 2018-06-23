@@ -35,6 +35,5 @@ public class SpringHelper {
 			LOGGER.error(e.getMessage(),e);
 		}
 		return messages;
-		
 	}
 }
