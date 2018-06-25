@@ -25,8 +25,6 @@ public interface UserService {
 	public BizResponseVO doLogin(LoginVO loginVO);
 	
 	public BizResponseVO doLogout(String authToken, String userName);
-
-	public BizResponseVO createUser(UserVO loggedInUser, UserVO userVO);
 	
 	public BizResponseVO forgotPassword(String userId);
 	

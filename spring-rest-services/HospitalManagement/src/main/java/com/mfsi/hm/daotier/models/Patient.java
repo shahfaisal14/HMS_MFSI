@@ -6,8 +6,10 @@ package com.mfsi.hm.daotier.models;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -25,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Patient extends BaseDataModel {
+public class Patient extends User {
 
 	@Transient
 	private static final long serialVersionUID = -887491660578713029L;
@@ -41,16 +43,16 @@ public class Patient extends BaseDataModel {
 	@Column(name = "appointmentDate")
 	private Date appointmentDate;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	private Doctor doctor;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	private Hospital hospital;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	private Room room;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	private Department department;
 	
 	@OneToMany(mappedBy = "patient")

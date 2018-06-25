@@ -9,10 +9,12 @@ import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mfsi.hm.biztier.vos.DoctorVO;
+import com.mfsi.hm.biztier.vos.HeadVO;
 import com.mfsi.hm.biztier.vos.HospitalVO;
 import com.mfsi.hm.biztier.vos.RoleAccessLevel;
 import com.mfsi.hm.biztier.vos.RoleVO;
 import com.mfsi.hm.daotier.models.Doctor;
+import com.mfsi.hm.daotier.models.Head;
 import com.mfsi.hm.daotier.models.Hospital;
 import com.mfsi.hm.daotier.models.Role;
 import com.mfsi.hm.daotier.services.RoleDataService;
@@ -35,16 +37,13 @@ public class ModelVOMapper {
 	public static DoctorVO convertDoctorModelToVO(Doctor doctor){
 		DoctorVO doctorVO = new DoctorVO();
 		if(doctor != null){
+			doctorVO.setDataStoreId(doctor.getDataStoreId());
 			doctorVO.setUserId(doctor.getEmail());
 			doctorVO.setEmail(doctor.getEmail());
 			doctorVO.setFirstName(doctor.getFirstName());
 			doctorVO.setMiddleName(doctor.getMiddleName());
 			doctorVO.setLastName(doctor.getLastName());
-			doctorVO.setHospital(doctor.getHospital());
-			doctorVO.setAppointments(doctor.getAppointments());
-			doctorVO.setDepartment(doctor.getDepartment());
 			doctorVO.setDescription(doctor.getDescription());
-			doctorVO.setPatients(doctor.getPatients());
 			doctorVO.setQualifications(doctor.getQualifications());
 			doctorVO.setIsActive(true);
 			doctorVO.setIsTerminated(false);
@@ -52,6 +51,24 @@ public class ModelVOMapper {
 		}
 		
 		return doctorVO;
+	}
+	
+	public static HeadVO convertHeadModelToVO(Head head){
+		HeadVO headVO = new HeadVO();
+		
+		if(headVO != null){
+			headVO.setDataStoreId(head.getDataStoreId());
+			headVO.setUserId(head.getEmail());
+			headVO.setEmail(head.getEmail());
+			headVO.setFirstName(head.getFirstName());
+			headVO.setMiddleName(head.getMiddleName());
+			headVO.setLastName(head.getLastName());
+			headVO.setIsActive(true);
+			headVO.setIsTerminated(false);
+			headVO.setHospital(convertHospitalModelToVO(head.getHospital()));
+			headVO.setRole(convertRoleModelToVO(head.getRole()));
+		}
+		return headVO;
 	}
 	
 	/**
@@ -63,16 +80,11 @@ public class ModelVOMapper {
 		HospitalVO hospitalVO = new HospitalVO();
 		
 		if(hospital != null){
+			hospitalVO.setDataStoreId(hospital.getDataStoreId());
 			hospitalVO.setAddress(hospital.getAddress());
 			hospitalVO.setContact(hospital.getContact());
 			hospitalVO.setEmail(hospital.getEmail());
 			hospitalVO.setName(hospital.getName());
-			hospitalVO.setDepartments(hospital.getDepartments());
-			hospitalVO.setDoctors(hospital.getDoctors());
-			hospitalVO.setLaboratories(hospital.getLaboratories());
-			hospitalVO.setPatients(hospital.getPatients());
-			hospitalVO.setRooms(hospital.getRooms());
-			hospitalVO.setSpeciality(hospital.getSpeciality());
 			hospitalVO.setIsActive(hospital.getIsActive());
 		}
 		return hospitalVO;
@@ -101,16 +113,12 @@ public class ModelVOMapper {
 	public static Doctor convertDoctorVOToModel(DoctorVO doctorVO, String loggedInUserId) {
 		Doctor doctor = new Doctor();
 		if(doctorVO != null){
+			doctor.setDataStoreId(doctorVO.getDataStoreId());
 			doctor.setUserId(doctorVO.getEmail());
 			doctor.setEmail(doctorVO.getEmail());
 			doctor.setFirstName(doctorVO.getFirstName());
 			doctor.setMiddleName(doctorVO.getMiddleName());
 			doctor.setLastName(doctorVO.getLastName());
-			doctor.setHospital(doctorVO.getHospital());
-			doctor.setAppointments(doctorVO.getAppointments());
-			doctor.setDepartment(doctorVO.getDepartment());
-			doctor.setDescription(doctorVO.getDescription());
-			doctor.setPatients(doctorVO.getPatients());
 			doctor.setQualifications(doctorVO.getQualifications());
 			doctor.setIsActive(true);
 			doctor.setIsTerminated(false);
@@ -125,6 +133,33 @@ public class ModelVOMapper {
 	
 	/**
 	 * 
+	 * @param headVO
+	 * @param loggedInUserId
+	 * @return Head
+	 */
+	public static Head convertHeadVOToModel(HeadVO headVO, String loggedInUserId){
+		Head head = new Head();
+		
+		if(headVO != null){
+			head.setDataStoreId(headVO.getDataStoreId());
+			head.setUserId(headVO.getEmail());
+			head.setEmail(headVO.getEmail());
+			head.setFirstName(headVO.getFirstName());
+			head.setMiddleName(headVO.getMiddleName());
+			head.setLastName(headVO.getLastName());
+			head.setIsActive(true);
+			head.setIsTerminated(false);
+			
+			Role role = roleDataService.getRoleById(RoleAccessLevel.HEAD.getRole());
+			head.setRole(role);
+			
+		}
+		SystemUtil.setBaseModelValues(head, loggedInUserId, SYSTEM_OF_RECORDX);
+		return head;
+	}
+	
+	/**
+	 * 
 	 * @param hospitalVO
 	 * @param userId
 	 * @return Hospital
@@ -133,16 +168,11 @@ public class ModelVOMapper {
 		Hospital hospital = new Hospital();
 		
 		if(hospitalVO != null){
+			hospital.setDataStoreId(hospitalVO.getDataStoreId());
 			hospital.setAddress(hospitalVO.getAddress());
 			hospital.setContact(hospitalVO.getContact());
 			hospital.setEmail(hospitalVO.getEmail());
 			hospital.setName(hospitalVO.getName());
-			hospital.setDepartments(hospitalVO.getDepartments());
-			hospital.setDoctors(hospitalVO.getDoctors());
-			hospital.setLaboratories(hospitalVO.getLaboratories());
-			hospital.setPatients(hospitalVO.getPatients());
-			hospital.setRooms(hospitalVO.getRooms());
-			hospital.setSpeciality(hospitalVO.getSpeciality());
 			hospital.setIsActive(IS_ACTIVE_HOSPITAL);
 			SystemUtil.setBaseModelValues(hospital, userId, SYSTEM_OF_RECORDX);
 		}

@@ -6,10 +6,12 @@ package com.mfsi.hm.daotier.models;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -31,7 +33,7 @@ public class Doctor extends User {
 	private static final long serialVersionUID = 300054063368430935L;
 	
 	Doctor(String createdBy, String modifiedBy, Date createdDate, Date modifiedDate, String systemOfRecordX, Long versionNumber) {
-		new User(createdBy, modifiedBy, createdDate, modifiedDate, systemOfRecordX, versionNumber);
+		super(createdBy, modifiedBy, createdDate, modifiedDate, systemOfRecordX, versionNumber);
 	}
 	
 	@ElementCollection
@@ -39,10 +41,10 @@ public class Doctor extends User {
 	@Column(name = "qualifications")
 	private Set<String> qualifications;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	private Hospital hospital;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	private Department department;
 	
 	@OneToMany(mappedBy = "doctor")

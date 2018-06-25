@@ -5,8 +5,6 @@ package com.mfsi.hm.biztier.vos;
 
 import java.io.Serializable;
 
-import javax.persistence.Transient;
-
 import lombok.Data;
 
 /**
@@ -16,7 +14,6 @@ import lombok.Data;
 @Data
 public class EntitledModuleVO implements Serializable {
 
-	@Transient
 	private static final long serialVersionUID = 7284642301088549739L;
 	
 	private String moduleId;

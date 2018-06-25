@@ -6,8 +6,6 @@ package com.mfsi.hm.biztier.vos;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Transient;
-
 import lombok.Data;
 
 /**
@@ -17,7 +15,6 @@ import lombok.Data;
 @Data
 public class UserVO implements Serializable {
 
-	@Transient
 	private static final long serialVersionUID = -8753645127744337493L;
 
 	protected Long dataStoreId;

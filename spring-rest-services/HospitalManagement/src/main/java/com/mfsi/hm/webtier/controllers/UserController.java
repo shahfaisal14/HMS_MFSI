@@ -50,20 +50,6 @@ public class UserController extends BaseController {
 		return response;
 	}
 	
-	@RequestMapping(value="/create", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RestResponseVO> createUser(@RequestBody UserVO userVO){
-		
-		ResponseEntity<RestResponseVO> response = null;
-		RestResponseVO responseVO = null;
-		
-		UserVO loggedInUser = LoggedInUserContext.getUser();
-		
-		responseVO = userHelper.createUser(loggedInUser, userVO);
-		response = new ResponseEntity<RestResponseVO>(responseVO, HttpStatus.OK);
-		
-		return response;
-	}
-	
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
 	public ResponseEntity<RestResponseVO> resetPassword(@RequestParam(value = "password", required = true) String password) 
 					throws NoSuchAlgorithmException, UnsupportedEncodingException{

@@ -25,14 +25,11 @@ import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_USER_LOGIN_FAILURE
 import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_USER_LOGIN_TOKEN_ISSUE;
 import static com.mfsi.hm.core.common.Constants.FORGOT_PASSWORD_BODY;
 import static com.mfsi.hm.core.common.Constants.FORGOT_PASSWORD_SUBJECT;
-import static com.mfsi.hm.core.common.Constants.IS_ACTIVE_USER;
 import static com.mfsi.hm.core.common.Constants.MAX_LOGIN_ATTEMPTS;
 import static com.mfsi.hm.core.common.Constants.PASSWORD_CHANGED_FAILURE;
 import static com.mfsi.hm.core.common.Constants.PASSWORD_CHANGED_SUCCESS;
 import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
 import static com.mfsi.hm.core.common.Constants.TEMP_CODE_EXPIRY_TIME;
-import static com.mfsi.hm.core.common.Constants.USER_CREATE_ERROR;
-import static com.mfsi.hm.core.common.Constants.USER_CREATE_SUCCESS;
 import static com.mfsi.hm.core.common.Constants.USER_LOGGED_OUT;
 import static com.mfsi.hm.core.common.Constants.VERSION_NUMBER;
 
@@ -187,39 +184,6 @@ public class UserServiceImpl implements UserService {
 		
 		
 		return bizResponse;
-	}
-	
-	@Override
-	public BizResponseVO createUser(UserVO loggedInUser, UserVO userVO) {
-		
-		BizResponseVO response = new BizResponseVO();
-		User user = convertUserVOToModel(userVO, loggedInUser.getUserId());
-		
-		
-		user.setIsActive(IS_ACTIVE_USER);
-		user.setIsTerminated(false);
-		user.setUserId(user.getEmail());
-		
-		String userRole = user.getRole().getId();
-		
-		if(userRole == "doctor"){
-			
-		} else if(userRole == "patient"){
-			
-		}
-		
-		User createdUser = userDataService.saveUser(user);
-		
-		if(createdUser != null){
-			response.setResponseType(ResponseType.SUCCESS);
-			response.setMessage(USER_CREATE_SUCCESS);
-			response.setResponseData(createdUser.getDataStoreId());
-		} else {
-			response.setResponseType(ResponseType.ERROR);
-			response.setMessage(USER_CREATE_ERROR);
-		}
-		
-		return response;
 	}
 
 	@Override
@@ -398,22 +362,6 @@ public class UserServiceImpl implements UserService {
 		return userVO;
 	}
 	
-	private User convertUserVOToModel(UserVO userVO, String loggedInUserId){
-		User user = null;
-		if (userVO != null) {
-			user = new User();
-			user.setDataStoreId(userVO.getDataStoreId());
-			user.setFirstName(userVO.getFirstName());
-			user.setMiddleName(userVO.getMiddleName());
-			user.setLastName(userVO.getLastName());
-			user.setUserId(userVO.getUserId());
-			user.setEmail(userVO.getEmail());
-			user.setRole(convertRoleVOToModel(userVO.getRole(), loggedInUserId));
-		}
-		SystemUtil.setBaseModelValues(user, loggedInUserId, SYSTEM_OF_RECORDX);
-		return user;
-	}
-	
 	private RoleVO convertRoleModelToVO(Role role){
 		RoleVO roleVO = new RoleVO();
 		if(role != null){
@@ -421,16 +369,6 @@ public class UserServiceImpl implements UserService {
 			roleVO.setId(role.getId());
 		}
 		return roleVO;
-	}
-	
-	private Role convertRoleVOToModel(RoleVO roleVO, String loggedInUserId){
-		Role role = new Role();
-		if(roleVO != null){
-			role.setName(roleVO.getName());
-			role.setId(roleVO.getId());
-		}
-		SystemUtil.setBaseModelValues(role, loggedInUserId, SYSTEM_OF_RECORDX);
-		return role;
 	}
 	
 	private LoginSuccessVO convertLoginSuccessVOToModel(ValidateUserVO validatedUser, Login login) {

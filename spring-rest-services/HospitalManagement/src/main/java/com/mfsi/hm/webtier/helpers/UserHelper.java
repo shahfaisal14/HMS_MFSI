@@ -74,18 +74,6 @@ public class UserHelper {
 		return response;
 	}
 
-	public RestResponseVO createUser(UserVO loggedInUser, UserVO userVO) {
-		
-		RestResponseVO response = new RestResponseVO();
-		BizResponseVO bizResponse = userService.createUser(loggedInUser, userVO);
-		
-		response.setResponseType(bizResponse.getResponseType());
-		response.setMessage(bizResponse.getMessage());
-		response.setResponseData(bizResponse.getResponseData());
-		
-		return response;
-	}
-	
 	/**
 	 * To reset password
 	 * 
@@ -104,7 +92,8 @@ public class UserHelper {
 		return response;
 	}
 
-	public RestResponseVO resetPassword(String userId, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public RestResponseVO resetPassword(String userId, String password) 
+			throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		RestResponseVO response = new RestResponseVO();
 		if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(password)) {
 			
@@ -127,9 +116,12 @@ public class UserHelper {
 	 * @throws UnsupportedEncodingException 
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public RestResponseVO changePassword(String userId, String oldPassword, String newPassword) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public RestResponseVO changePassword(String userId, String oldPassword, String newPassword) 
+			throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		
 		RestResponseVO response = new RestResponseVO();
-		if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(oldPassword) && StringUtils.isNotBlank(newPassword)) {
+		if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(oldPassword) 
+				&& StringUtils.isNotBlank(newPassword)) {
 
 			BizResponseVO bizResponse = userService.changePassword(userId, oldPassword, newPassword);
 			response.setResponseType(bizResponse.getResponseType());

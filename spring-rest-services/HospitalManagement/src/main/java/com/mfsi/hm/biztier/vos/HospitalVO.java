@@ -3,17 +3,8 @@
  */
 package com.mfsi.hm.biztier.vos;
 
+import java.io.Serializable;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-
-import com.mfsi.hm.daotier.models.Department;
-import com.mfsi.hm.daotier.models.Doctor;
-import com.mfsi.hm.daotier.models.Laboratory;
-import com.mfsi.hm.daotier.models.Patient;
-import com.mfsi.hm.daotier.models.Room;
-import com.mfsi.hm.daotier.models.Speciality;
 
 import lombok.Data;
 
@@ -22,9 +13,11 @@ import lombok.Data;
  *
  */
 @Data
-public class HospitalVO {
+public class HospitalVO implements Serializable {
 	
-	private Long hospitalId;
+	private static final long serialVersionUID = 2028832628205536214L;
+
+	private Long dataStoreId;
 
 	private String name;
 	
@@ -36,15 +29,17 @@ public class HospitalVO {
 	
 	private Boolean isActive;
 	
-	private Speciality speciality;
+	private SpecialityVO speciality;
 	
-	private Set<Department> departments;
+	private Set<DepartmentVO> departments;
 	
-	private Set<Laboratory> laboratories;
+	private Set<LaboratoryVO> laboratories;
 	
-	private Set<Room> rooms;
+	private Set<RoomVO> rooms;
 	
-	private Set<Doctor> doctors;
+	private Set<DoctorVO> doctors;
 	
-	private Set<Patient> patients;
+	private Set<PatientVO> patients;
+	
+	private HeadVO head;
 }
