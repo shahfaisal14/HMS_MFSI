@@ -47,7 +47,7 @@ public class Constants {
 	public static final String ERROR_CODE_PARAM_EXCEPTION = "ERR 005";
 	public static final String ERROR_MESSAGE_PARAM_EXCEPTION = "missing.param";
 	public static final String ERROR_CODE_ACCESS_LEVEL = "ERR 006";
-	public static final String ERROR_MESSAGE_ACCESS_LEVEL = "Your access level is low to perform this action.";
+	public static final String ERROR_MESSAGE_ACCESS_LEVEL = "Your access level is not enough to perform this action.";
 	public static final String ERROR_MESSAGE_ACCESS_LEVEL_USER_CREATE = "error.access.level.user.create";
 	public static final String ERROR_CODE_AES_ENCRYPTION= "ERR 007";
 	

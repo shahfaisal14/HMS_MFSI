@@ -327,7 +327,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(isLoginInfoSaved){
 			String subject = SpringHelper.getMessage(CREATE_USER_SUBJECT, null, APP_LOCALE);
-			Object []values = {getUserName(login), password, login.getUser().getRole().getName()};
+			Object []values = {getUserName(login), login.getUser().getRole().getName(), login.getUser().getUserId(),  password};
 			String emailBody = SpringHelper.getMessage(CREATE_USER_BODY, values, APP_LOCALE);
 			String []toEmails = {user.getEmail()};
 			isMailSent = emailService.sendEMail(toEmails, subject, emailBody);
@@ -449,7 +449,7 @@ public class UserServiceImpl implements UserService {
 			String authToken = generateToken(userId);
 			validatedUser.setAuthToken(authToken);
 		
-		} else if (login.getTempAuthCode() != null && DigestUtils.sha256Hex(login.getTempAuthCode()).equals(code)) {
+		} else if (login.getTempAuthCode() != null && login.getTempAuthCode().equals(code)) {
 			if(StringHelper.dateTime(login.getAuthCodeCreatedTime(), login.getExpiryDuration()).compareTo(StringHelper.dateTime(new Date(), 0L)) > 0){
 				userDataService.removeLoginAttempts(userId);
 				

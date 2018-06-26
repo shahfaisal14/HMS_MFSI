@@ -19,6 +19,8 @@ export class LoginComponent implements OnInit {
 
   private login: LoginModel = new LoginModel(null, null);
 
+  private loginStep: string = 'login';
+
   ngOnInit() {
   }
 
@@ -34,7 +36,23 @@ export class LoginComponent implements OnInit {
   }
 
   forgotPassword(){
-    alert('To be implemented.')
+    this.loginStep = 'forgotPassword';
+    this.login.passCode = '';
+  }
+
+  backToLogin(){
+    this.loginStep = 'login';
+  }
+
+  requestPasswordReset(){
+    this.loginService.requestPasswordReset(this.login.userCode)
+    .subscribe((item) => {
+      let dataFromServer = JSON.parse(item._body);
+      if(dataFromServer.responseType == 'SUCCESS'){
+        alert(dataFromServer.responseData.message);
+        this.loginStep = 'login';
+      }
+    });
   }
 
   private setLoginEssentials(dataFromServer: any){

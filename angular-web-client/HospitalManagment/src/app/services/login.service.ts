@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Request, RequestOptions, RequestMethod } from '@angular/http';
 import { LoginModel } from '../models/login.model';
+import { LocalStorageService } from 'angular-2-local-storage';
 
 @Injectable({
   providedIn: 'root'
@@ -12,5 +13,9 @@ export class LoginService {
 
   doLogin(loginModel: LoginModel){
     return this.http.post('/user/doLogin', loginModel);
+  }
+
+  requestPasswordReset(userId:string){
+    return this.http.post('/user/forgotPassword?userId='+userId, null)
   }
 }

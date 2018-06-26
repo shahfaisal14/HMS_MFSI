@@ -10,14 +10,16 @@
       <input type="text" class="input-box" 
               [(ngModel)]="login.userCode"/>
       
-      <div class="label">Password</div>
-      <input type="password" class="input-box" 
+      <div *ngIf="loginStep == 'login'" class="label">Password</div>
+      <input *ngIf="loginStep == 'login'" type="password" class="input-box" 
              [(ngModel)]="login.passCode" 
              (keyup)="$event.which == '13' && doLogin()"/>
 
-      <div class="link" (click)="forgotPassword()">Forgot Password?</div>
+      <div *ngIf="loginStep == 'login'" class="link" (click)="forgotPassword()">Forgot Password?</div>
+      <div *ngIf="loginStep == 'forgotPassword'" class="link" (click)="backToLogin()">Back to login</div>
 
-      <div class="button" (click)="doLogin()">Login</div>
+      <div *ngIf="loginStep == 'login'" class="button" (click)="doLogin()">Login</div>
+      <div *ngIf="loginStep == 'forgotPassword'" class="button" (click)="requestPasswordReset()">Request Password Reset</div>
     </div>
   </div>
 

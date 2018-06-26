@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mfsi.hm.daotier.models.Head;
+import com.mfsi.hm.daotier.repositories.HeadRepository;
 
 /**
  * @author shah
