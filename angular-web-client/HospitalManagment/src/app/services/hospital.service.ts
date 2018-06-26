@@ -11,8 +11,6 @@ export class HospitalService {
   constructor(public http:Http, public localStorageService: LocalStorageService) { }
 
   addHospital(hospital: Hospital){
-    let options:any = new RequestOptions();
-    options.headers.append('X-Auth-Token', this.localStorageService.get('token'));
-    return this.http.post('/hospital/add', hospital, options);
+    return this.http.post('/hospital/add', hospital);
   }
 }

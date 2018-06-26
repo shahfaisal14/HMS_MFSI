@@ -43,6 +43,16 @@ export class AddHospitalComponent implements OnInit {
   ngOnInit() {
   }
 
+  addHospital(){
+    this.hospitalService.addHospital(this.hospital)
+    .subscribe((item) => {
+      let dataFromServer = JSON.parse(item._body);
+      if(dataFromServer.responseType == 'SUCCESS'){
+        alert(dataFromServer.responseData.message);
+      }
+    });
+  }
+  
   /* Adds an input field on plus icon click */
   addInputBox (index:string, inputField:string, indexOfParentItemIfAny?:string) {
 
@@ -72,15 +82,4 @@ export class AddHospitalComponent implements OnInit {
       this.hospital[inputField].splice(index,1);
     }
   }
-
-  addHospital(){
-    this.hospitalService.addHospital(this.hospital)
-    .subscribe((item) => {
-      let dataFromServer = JSON.parse(item._body);
-      if(dataFromServer.responseType == 'SUCCESS'){
-        alert("Hospital Add Success");
-      }
-    });
-  }
-  
 }

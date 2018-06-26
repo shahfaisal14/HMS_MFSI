@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mfsi.hm.biztier.vos.DoctorVO;
 import com.mfsi.hm.biztier.vos.LoginVO;
 import com.mfsi.hm.biztier.vos.UserVO;
 import com.mfsi.hm.core.common.BaseController;

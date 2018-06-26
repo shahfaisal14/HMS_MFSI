@@ -56,10 +56,10 @@ export class LoginComponent implements OnInit {
   }
 
   private setLoginEssentials(dataFromServer: any){
-    this.localStorageService.set('token', dataFromServer.responseData.authToken);
-    this.localStorageService.set('entitledModules', dataFromServer.responseData.entitledModules);
-    this.localStorageService.set('message', dataFromServer.responseData.message);
-    this.localStorageService.set('userCode', dataFromServer.responseData.userCode);
-    this.localStorageService.set('userName', dataFromServer.responseData.userName);
+    localStorage.setItem('token', dataFromServer.responseData.authToken);
+    localStorage.setItem('entitledModules', dataFromServer.responseData.entitledModules);
+    localStorage.setItem('message', dataFromServer.responseData.message);
+    localStorage.setItem('userCode', dataFromServer.responseData.userCode);
+    localStorage.setItem('userName', dataFromServer.responseData.userName);
   }
 }

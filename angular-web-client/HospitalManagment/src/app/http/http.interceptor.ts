@@ -26,9 +26,10 @@ export class HttpInterceptorService extends Http {
     return super.get(url, this.getRequestOptionArgs(options));
   }
 
-  post(url: string, body: string, options?: RequestOptionsArgs): Observable<any> {
+  post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
     url = this.updateUrl(url);
-    return super.post(url, body, this.getRequestOptionArgs(options))
+    let opt = this.getRequestOptionArgs(options);
+    return super.post(url, body, opt)
       .catch(this.onCatch)
       .do((res: Response) => {
           this.onSubscribeSuccess(res);
@@ -46,8 +47,18 @@ export class HttpInterceptorService extends Http {
   }
 
   delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
-      url = this.updateUrl(url);
-      return super.delete(url, this.getRequestOptionArgs(options));
+    url = this.updateUrl(url);
+    let opt = this.getRequestOptionArgs(options);
+      return super.delete(url, opt)
+      .catch(this.onCatch)
+      .do((res: Response) => {
+          this.onSubscribeSuccess(res);
+      }, (error: any) => {
+          this.onSubscribeError(error);
+      })
+      .finally(() => {
+          this.onFinally();
+      });
   }
 
   private updateUrl(req: string) {
@@ -55,13 +66,14 @@ export class HttpInterceptorService extends Http {
   }
 
   private getRequestOptionArgs(options?: RequestOptionsArgs) : RequestOptionsArgs {
-    if (options == null) {
-        options = new RequestOptions();
-    }
-    if (options.headers == null) {
-        options.headers = new Headers();
-    }
-    options.headers.append('Content-Type', 'application/json');
+    let authToken = localStorage.getItem('token');
+    
+    options = new RequestOptions({
+      headers:new Headers({ 
+        'Content-Type': 'application/json',
+        'X-Auth-Token': authToken
+      })
+    });
 
     return options;
   }

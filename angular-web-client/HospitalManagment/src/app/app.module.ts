@@ -34,6 +34,7 @@ import * as Charts from 'fusioncharts/fusioncharts.charts';
 import * as FintTheme from 'fusioncharts/themes/fusioncharts.theme.fint';
 import { FusionChartsModule } from 'angular4-fusioncharts';
 import { AddHospitalComponent } from './components/add-hospital/add-hospital.component';
+import { HttpInterceptorService } from './http/http.interceptor';
 
 // Pass it to fcRoot method to resolve module dependencies
 // Pass FusionCharts core as first argument.
@@ -86,7 +87,8 @@ const appRoutes: Routes = [
       deps: [XHRBackend, RequestOptions]
     },
     LoginService,
-    HospitalService
+    HospitalService,
+    HttpInterceptorService
   ],
   bootstrap: [
     AppComponent

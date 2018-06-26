@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { LoginService } from '../../services/login.service';
+import { LocalStorageModule, LocalStorageService } from 'angular-2-local-storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(public loginService:LoginService, public localStorageService: LocalStorageService, public router: Router) { }
 
   ngOnInit() {
   }
 
+  doLogout(){
+    this.loginService.doLogout()
+    .subscribe((item) => {
+      let dataFromServer = JSON.parse(item._body);
+      if(dataFromServer.responseType == 'SUCCESS'){
+        this.localStorageService.set('token', null);
+        this.router.navigate(['']);
+      }
+    });
+  }
 }

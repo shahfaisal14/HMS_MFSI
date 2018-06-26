@@ -6,6 +6,7 @@ package com.mfsi.hm.core.filters;
 import static com.mfsi.hm.core.common.Constants.APP_LOCALE;
 import static com.mfsi.hm.core.common.Constants.ERROR_CODE_TOKEN_EXCEPTION;
 import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_TOKEN_EXIST;
+import static com.mfsi.hm.core.common.Constants.OPTIONS;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,24 +35,43 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	
+		response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+		response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
 		
-		String requestURI = request.getRequestURI();
-		String authToken = request.getHeader("X-Auth-Token");
-		
-		if(StringUtils.isNotBlank(authToken)){
-			TokenValidationVO tokenValidationVO = userHelper.getUserDetails(authToken);
-			if(ResponseType.SUCCESS.getType().equals(tokenValidationVO.getResponseType())){
-				UserVO loggedInUser = tokenValidationVO.getUser();
-				LoggedInUserContext.setUser(loggedInUser);
-				return true;
-			}
-			return false;
+		System.out.println(request.getMethod());
+
+		if(OPTIONS.equals(request.getMethod())){
+			response.setStatus(HttpServletResponse.SC_OK);	
+		} else if (request.getRequestURL().indexOf("/doLogin") == -1 && 
+				request.getRequestURL().indexOf("/forgotPassword") == -1) {
 			
-		} else if(!(requestURI.equals("/user/doLogin") || requestURI.equals("/user/forgotPassword"))){
-			throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, 
-					SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_EXIST, null, APP_LOCALE));
-		} else {
+			String authToken = request.getHeader("X-Auth-Token");
+			System.out.println("Auth token is " + authToken + " for request " + request.getMethod());
+
+			if (StringUtils.isBlank(authToken)) {
+				throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, 
+						SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_EXIST, null, APP_LOCALE));
+			} else if(StringUtils.isNotBlank(authToken) && isValidToken(authToken)){
+				response.setStatus(HttpServletResponse.SC_OK);
+				return true;
+			} else {
+				response.setStatus(HttpServletResponse.SC_OK);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean isValidToken(String authToken){
+		TokenValidationVO tokenValidationVO = userHelper.getUserDetails(authToken);
+		if(ResponseType.SUCCESS.getType().equals(tokenValidationVO.getResponseType())){
+			UserVO loggedInUser = tokenValidationVO.getUser();
+			LoggedInUserContext.setUser(loggedInUser);
 			return true;
 		}
+		return false;
 	}
 }

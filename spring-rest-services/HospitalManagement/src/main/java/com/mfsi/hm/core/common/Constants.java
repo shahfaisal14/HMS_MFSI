@@ -88,4 +88,7 @@ public class Constants {
 	// Date Formats
 	public static final String MM_DD_YYYY_DATE_FORMAT = "MM/dd/yyyy";
 	public static final String MM_DD_YYYY_HH_MM_SS_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
+	
+	// CORS Access-Control-Allow-Methods
+	public static final String OPTIONS = "OPTIONS";
 }

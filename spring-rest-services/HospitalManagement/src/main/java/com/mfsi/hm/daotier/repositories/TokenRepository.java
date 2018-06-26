@@ -3,6 +3,8 @@
  */
 package com.mfsi.hm.daotier.repositories;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,7 @@ public interface TokenRepository extends CrudRepository<Token, Long>{
 
 	public Token findByToken(String authToken);
 
+	@Transactional
 	public void deleteByToken(String authToken);
 
 }

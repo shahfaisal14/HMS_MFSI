@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Http, Request, RequestOptions, RequestMethod } from '@angular/http';
 import { LoginModel } from '../models/login.model';
 import { LocalStorageService } from 'angular-2-local-storage';
+import { HttpInterceptorService } from '../http/http.interceptor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  constructor(public http: Http) {
+  constructor(public http: Http, public localStorageService: LocalStorageService) {
   }
 
   doLogin(loginModel: LoginModel){
@@ -17,5 +18,9 @@ export class LoginService {
 
   requestPasswordReset(userId:string){
     return this.http.post('/user/forgotPassword?userId='+userId, null)
+  }
+
+  doLogout(){
+    return this.http.delete('/user/doLogout');
   }
 }

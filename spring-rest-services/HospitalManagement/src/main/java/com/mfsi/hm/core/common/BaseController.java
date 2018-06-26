@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.mfsi.hm.core.exceptions.TokenException;
@@ -20,7 +21,7 @@ import com.mfsi.hm.core.responses.RestResponseVO;
  * @author shah
  *
  */
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class BaseController {
 
 	public static Logger LOGGER = LogManager.getLogger(BaseController.class);
