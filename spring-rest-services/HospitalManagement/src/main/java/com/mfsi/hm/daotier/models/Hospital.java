@@ -49,13 +49,13 @@ public class Hospital extends BaseDataModel{
 	@JoinColumn(name="speciality", nullable= true)
 	private Speciality speciality;
 	
-	@OneToMany(mappedBy = "hospital")
+	@OneToMany(mappedBy = "hospital", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<Department> departments = new HashSet<Department>();
 	
-	@OneToMany(mappedBy = "hospital")
+	@OneToMany(mappedBy = "hospital", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<Laboratory> laboratories = new HashSet<Laboratory>();
 	
-	@OneToMany(mappedBy = "hospital")
+	@OneToMany(mappedBy = "hospital", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private Set<Room> rooms = new HashSet<Room>();
 	
 	@OneToMany(mappedBy = "hospital")

@@ -35,6 +35,7 @@ import * as FintTheme from 'fusioncharts/themes/fusioncharts.theme.fint';
 import { FusionChartsModule } from 'angular4-fusioncharts';
 import { AddHospitalComponent } from './components/add-hospital/add-hospital.component';
 import { HttpInterceptorService } from './http/http.interceptor';
+import { HospitalListingComponent } from './components/hospital-listing/hospital-listing.component';
 
 // Pass it to fcRoot method to resolve module dependencies
 // Pass FusionCharts core as first argument.
@@ -52,6 +53,10 @@ const appRoutes: Routes = [
     {
       path      : 'addHospital',
       component : AddHospitalComponent
+    },
+    {
+      path      : 'hospitalList',
+      component : HospitalListingComponent
     }
 ];
 
@@ -63,7 +68,8 @@ const appRoutes: Routes = [
     HeaderComponent,
     LeftNavComponent,
     ContentPanelComponent,
-    AddHospitalComponent
+    AddHospitalComponent,
+    HospitalListingComponent
   ],
   imports: [
     BrowserModule,

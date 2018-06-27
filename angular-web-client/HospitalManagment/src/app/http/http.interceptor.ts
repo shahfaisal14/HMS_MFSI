@@ -23,7 +23,17 @@ export class HttpInterceptorService extends Http {
 
   get(url: string, options?: RequestOptionsArgs) : Observable<Response>{
     url = this.updateUrl(url);
-    return super.get(url, this.getRequestOptionArgs(options));
+    let opt = this.getRequestOptionArgs(options);
+    return super.get(url, opt)
+      .catch(this.onCatch)
+      .do((res: Response) => {
+          this.onSubscribeSuccess(res);
+      }, (error: any) => {
+          this.onSubscribeError(error);
+      })
+      .finally(() => {
+          this.onFinally();
+      });
   }
 
   post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {

@@ -43,8 +43,8 @@ public class HospitalController extends BaseController {
 		return response;
 	}
 	
-	@RequestMapping(value="/getList", method=RequestMethod.POST)
-	public ResponseEntity<RestResponseVO> getHospitalList(@RequestBody FilterInfoVO filterInfoVO) {
+	@RequestMapping(value="/getList", method=RequestMethod.GET)
+	public ResponseEntity<RestResponseVO> getHospitalList() {
 		
 		ResponseEntity<RestResponseVO> response = null;
 		

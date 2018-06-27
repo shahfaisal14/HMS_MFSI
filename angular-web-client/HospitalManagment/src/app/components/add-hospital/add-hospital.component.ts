@@ -48,7 +48,7 @@ export class AddHospitalComponent implements OnInit {
     .subscribe((item) => {
       let dataFromServer = JSON.parse(item._body);
       if(dataFromServer.responseType == 'SUCCESS'){
-        alert(dataFromServer.responseData.message);
+        alert(dataFromServer.message);
       }
     });
   }

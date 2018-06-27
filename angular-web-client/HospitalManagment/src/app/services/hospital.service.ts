@@ -13,4 +13,8 @@ export class HospitalService {
   addHospital(hospital: Hospital){
     return this.http.post('/hospital/add', hospital);
   }
+
+  getHospitals(){
+    return this.http.get('/hospital/getList');
+  }
 }

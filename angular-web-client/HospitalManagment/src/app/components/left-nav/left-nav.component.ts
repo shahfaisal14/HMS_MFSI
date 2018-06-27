@@ -18,7 +18,7 @@ export class LeftNavComponent implements OnInit {
       this.router.navigate(['dashboard']);
     }
     if(item == 'hospitals'){
-      this.router.navigate(['addHospital']);
+      this.router.navigate(['hospitalList']);
     }
   }
 
