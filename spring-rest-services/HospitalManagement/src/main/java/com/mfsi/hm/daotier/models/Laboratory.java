@@ -6,12 +6,16 @@ package com.mfsi.hm.daotier.models;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.databind.ser.impl.FailingSerializer;
 import com.mfsi.hm.core.common.BaseDataModel;
 
 import lombok.Data;
@@ -38,7 +42,8 @@ public class Laboratory extends BaseDataModel {
 	@OneToMany
 	private Set<MedicalTest> medicalTests;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.REFRESH)
+	@JoinColumn(name="hospital_data_store_id", nullable=false)
 	private Hospital hospital;
 	
 	public Laboratory(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX, Long versionNumber){

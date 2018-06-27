@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public loginService:LoginService, public localStorageService: LocalStorageService, public router: Router) { }
+  constructor(public loginService:LoginService, public router: Router) { }
 
   ngOnInit() {
   }
@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
     .subscribe((item) => {
       let dataFromServer = JSON.parse(item._body);
       if(dataFromServer.responseType == 'SUCCESS'){
-        this.localStorageService.set('token', null);
+        localStorage.setItem('token', null);
         this.router.navigate(['']);
       }
     });

@@ -8,15 +8,23 @@ import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mfsi.hm.biztier.vos.DepartmentVO;
 import com.mfsi.hm.biztier.vos.DoctorVO;
 import com.mfsi.hm.biztier.vos.HeadVO;
 import com.mfsi.hm.biztier.vos.HospitalVO;
+import com.mfsi.hm.biztier.vos.LaboratoryVO;
 import com.mfsi.hm.biztier.vos.RoleAccessLevel;
 import com.mfsi.hm.biztier.vos.RoleVO;
+import com.mfsi.hm.biztier.vos.RoomVO;
+import com.mfsi.hm.biztier.vos.SpecialityVO;
+import com.mfsi.hm.daotier.models.Department;
 import com.mfsi.hm.daotier.models.Doctor;
 import com.mfsi.hm.daotier.models.Head;
 import com.mfsi.hm.daotier.models.Hospital;
+import com.mfsi.hm.daotier.models.Laboratory;
 import com.mfsi.hm.daotier.models.Role;
+import com.mfsi.hm.daotier.models.Room;
+import com.mfsi.hm.daotier.models.Speciality;
 import com.mfsi.hm.daotier.services.RoleDataService;
 
 /**
@@ -29,14 +37,36 @@ public class ModelVOMapper {
 	@Autowired
 	private static RoleDataService roleDataService;
 	
+	
+	
+	/**
+	 * 
+	 * @param department
+	 * @return DepartmentVO
+	 */
+	public static DepartmentVO convertDepartmentModelToVO(Department department){
+		DepartmentVO departmentVO = null;
+		if(department != null){
+			departmentVO = new DepartmentVO();
+			departmentVO.setDataStoreId(department.getDataStoreId());
+			departmentVO.setDepartmentId(department.getDepartmentId());
+			departmentVO.setDescription(department.getDescription());
+			departmentVO.setFacilities(department.getFacilities());
+			departmentVO.setName(department.getName());
+		}
+		
+		return departmentVO;
+	}
+	
 	/**
 	 * 
 	 * @param doctor
 	 * @return DoctorVO
 	 */
 	public static DoctorVO convertDoctorModelToVO(Doctor doctor){
-		DoctorVO doctorVO = new DoctorVO();
+		DoctorVO doctorVO = null;
 		if(doctor != null){
+			doctorVO = new DoctorVO();
 			doctorVO.setDataStoreId(doctor.getDataStoreId());
 			doctorVO.setUserId(doctor.getEmail());
 			doctorVO.setEmail(doctor.getEmail());
@@ -54,9 +84,10 @@ public class ModelVOMapper {
 	}
 	
 	public static HeadVO convertHeadModelToVO(Head head){
-		HeadVO headVO = new HeadVO();
+		HeadVO headVO = null;
 		
-		if(headVO != null){
+		if(head != null){
+			headVO = new HeadVO();
 			headVO.setDataStoreId(head.getDataStoreId());
 			headVO.setUserId(head.getEmail());
 			headVO.setEmail(head.getEmail());
@@ -77,9 +108,10 @@ public class ModelVOMapper {
 	 * @return HospitalVO
 	 */
 	public static HospitalVO convertHospitalModelToVO(Hospital hospital){
-		HospitalVO hospitalVO = new HospitalVO();
+		HospitalVO hospitalVO = null;
 		
 		if(hospital != null){
+			hospitalVO = new HospitalVO();
 			hospitalVO.setDataStoreId(hospital.getDataStoreId());
 			hospitalVO.setAddress(hospital.getAddress());
 			hospitalVO.setContact(hospital.getContact());
@@ -90,18 +122,85 @@ public class ModelVOMapper {
 		return hospitalVO;
 	}
 	
+	public static LaboratoryVO convertLaboratoryVOToModel(Laboratory laboratory){
+		LaboratoryVO laboratoryVO = null;
+		
+		if(laboratory != null){
+			laboratoryVO = new LaboratoryVO();
+			laboratoryVO.setName(laboratory.getName());
+		}
+		return laboratoryVO;
+	}
+	
 	/**
 	 * 
 	 * @param role
 	 * @return RoleVO
 	 */
 	public static RoleVO convertRoleModelToVO(Role role){
-		RoleVO roleVO = new RoleVO();
+		RoleVO roleVO = null;
 		if(role != null){
+			roleVO = new RoleVO();
 			roleVO.setName(role.getName());
 			roleVO.setId(role.getId());
 		}
 		return roleVO;
+	}
+	
+	/**
+	 * 
+	 * @param room
+	 * @return RoomVO
+	 */
+	public static RoomVO convertRoomModelToVO(Room room){
+		RoomVO roomVO = null;
+		
+		if(room != null){
+			roomVO = new RoomVO();
+			roomVO.setRoomNumber(room.getRoomNumber());
+			roomVO.setTotalBeds(room.getTotalBeds());
+			roomVO.setAvailableBeds(room.getAvailableBeds());
+			roomVO.setChargesPerDay(room.getChargesPerDay());
+		}
+		return roomVO;
+	}
+	
+	/**
+	 * 
+	 * @param speciality
+	 * @return SpecialityVO
+	 */
+	public static SpecialityVO convertSpecialityModelToVO(Speciality speciality){
+		SpecialityVO specialityVO = null;
+		
+		if(speciality != null){
+			specialityVO = new SpecialityVO();
+			specialityVO.setName(speciality.getName());
+			specialityVO.setDescription(speciality.getDescription());
+		}
+		
+		return specialityVO;
+	}
+	
+	
+	/**
+	 * 
+	 * @param departmentVO
+	 * @param loggedInUserId
+	 * @return Department
+	 */
+	public static Department convertDepartmentVOToModel(DepartmentVO departmentVO, String loggedInUserId){
+		Department department = null;
+		if(departmentVO != null){
+			department = new Department();
+			department.setDataStoreId(departmentVO.getDataStoreId());
+			department.setDepartmentId(departmentVO.getDepartmentId());
+			department.setDescription(departmentVO.getDescription());
+			department.setFacilities(departmentVO.getFacilities());
+			department.setName(departmentVO.getName());
+			SystemUtil.setBaseModelValues(department, loggedInUserId, SYSTEM_OF_RECORDX);
+		}
+		return department;
 	}
 	
 	/**
@@ -111,8 +210,9 @@ public class ModelVOMapper {
 	 * @return Doctor
 	 */
 	public static Doctor convertDoctorVOToModel(DoctorVO doctorVO, String loggedInUserId) {
-		Doctor doctor = new Doctor();
+		Doctor doctor = null;
 		if(doctorVO != null){
+			doctor = new Doctor();
 			doctor.setDataStoreId(doctorVO.getDataStoreId());
 			doctor.setUserId(doctorVO.getEmail());
 			doctor.setEmail(doctorVO.getEmail());
@@ -125,8 +225,9 @@ public class ModelVOMapper {
 			
 			Role role = roleDataService.getRoleById(RoleAccessLevel.DOCTOR.getRole());
 			doctor.setRole(role);
+			
+			SystemUtil.setBaseModelValues(doctor, loggedInUserId, SYSTEM_OF_RECORDX);
 		}
-		SystemUtil.setBaseModelValues(doctor, loggedInUserId, SYSTEM_OF_RECORDX);
 		
 		return doctor;
 	}
@@ -138,9 +239,10 @@ public class ModelVOMapper {
 	 * @return Head
 	 */
 	public static Head convertHeadVOToModel(HeadVO headVO, String loggedInUserId){
-		Head head = new Head();
+		Head head = null;
 		
 		if(headVO != null){
+			head = new Head();
 			head.setDataStoreId(headVO.getDataStoreId());
 			head.setUserId(headVO.getEmail());
 			head.setEmail(headVO.getEmail());
@@ -153,8 +255,8 @@ public class ModelVOMapper {
 			Role role = roleDataService.getRoleById(RoleAccessLevel.HEAD.getRole());
 			head.setRole(role);
 			
+			SystemUtil.setBaseModelValues(head, loggedInUserId, SYSTEM_OF_RECORDX);
 		}
-		SystemUtil.setBaseModelValues(head, loggedInUserId, SYSTEM_OF_RECORDX);
 		return head;
 	}
 	
@@ -165,9 +267,10 @@ public class ModelVOMapper {
 	 * @return Hospital
 	 */
 	public static Hospital convertHospitalVoToModel(HospitalVO hospitalVO, String userId){
-		Hospital hospital = new Hospital();
+		Hospital hospital = null;
 		
 		if(hospitalVO != null){
+			hospital = new Hospital();
 			hospital.setDataStoreId(hospitalVO.getDataStoreId());
 			hospital.setAddress(hospitalVO.getAddress());
 			hospital.setContact(hospitalVO.getContact());
@@ -177,6 +280,63 @@ public class ModelVOMapper {
 			SystemUtil.setBaseModelValues(hospital, userId, SYSTEM_OF_RECORDX);
 		}
 		return hospital;
+	}
+	
+	/**
+	 * 
+	 * @param laboratoryVO
+	 * @param userId
+	 * @return Laboratory
+	 */
+	public static Laboratory convertLaboratoryVOToModel(LaboratoryVO laboratoryVO, String userId){
+		Laboratory laboratory = null;
+		
+		if(laboratoryVO != null){
+			laboratory = new Laboratory();
+			laboratory.setName(laboratoryVO.getName());
+			SystemUtil.setBaseModelValues(laboratory, userId, SYSTEM_OF_RECORDX);
+		}
+		return laboratory;
+	}
+	
+	/**
+	 * 
+	 * @param roomVO
+	 * @param userId
+	 * @return Room
+	 */
+	public static Room convertRoomVOToModel(RoomVO roomVO, String userId){
+		Room room = null;
+		
+		if(roomVO != null){
+			room = new Room();
+			room.setRoomNumber(roomVO.getRoomNumber());
+			room.setTotalBeds(roomVO.getTotalBeds());
+			room.setAvailableBeds(room.getAvailableBeds());
+			room.setChargesPerDay(roomVO.getChargesPerDay());
+			SystemUtil.setBaseModelValues(room, userId, SYSTEM_OF_RECORDX);
+		}
+		return room;
+	}
+	
+	
+	/**
+	 * 
+	 * @param specialityVO
+	 * @param userId 
+	 * @return Speciality
+	 */
+	public static Speciality convertSpecialityVOToModel(SpecialityVO specialityVO, String userId){
+		Speciality speciality = null;
+		
+		if(specialityVO != null){
+			speciality = new Speciality();
+			speciality.setName(specialityVO.getName());
+			speciality.setDescription(specialityVO.getDescription());
+			SystemUtil.setBaseModelValues(speciality, userId, SYSTEM_OF_RECORDX);
+		}
+		
+		return speciality;
 	}
 
 }

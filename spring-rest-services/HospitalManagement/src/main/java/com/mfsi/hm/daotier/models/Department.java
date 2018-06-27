@@ -2,8 +2,11 @@ package com.mfsi.hm.daotier.models;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -35,7 +38,8 @@ public class Department extends BaseDataModel {
 	@Column(name = "facilities")
 	private String facilities;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
+	@JoinColumn(name="hospital_data_store_id", nullable= false)
 	private Hospital hospital;
 	
 	@OneToMany(mappedBy = "department")

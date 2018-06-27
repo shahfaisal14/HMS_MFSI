@@ -29,7 +29,7 @@ public class RoomVO implements Serializable {
 	
 	private Integer availableBeds;
 	
-	private Integer chargesPerDay;
+	private String chargesPerDay;
 	
 	private HospitalVO hospital;
 	

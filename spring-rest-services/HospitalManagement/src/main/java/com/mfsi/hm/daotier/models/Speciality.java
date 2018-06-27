@@ -5,6 +5,7 @@ package com.mfsi.hm.daotier.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import com.mfsi.hm.core.common.BaseDataModel;
@@ -22,10 +23,13 @@ public class Speciality extends BaseDataModel {
 	@Transient
 	private static final long serialVersionUID = 5999300725725052575L;
 	
-	@Column(name="name")
+	@Column(name="name", nullable = false, length = 4096)
 	private String name;
 	
-	@Column(name="description")
+	@Column(name="description", nullable = true, length = 4096)
 	private String description;
+	
+	@OneToOne(mappedBy="speciality")
+	private Hospital hospital;
 
 }

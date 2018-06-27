@@ -3,10 +3,14 @@
  */
 package com.mfsi.hm.daotier.models;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -41,22 +45,23 @@ public class Hospital extends BaseDataModel{
 	@Column(name = "isActive")
 	private Boolean isActive;
 	
-	@Column(name = "speciality")
+	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name="speciality", nullable= true)
 	private Speciality speciality;
 	
 	@OneToMany(mappedBy = "hospital")
-	private Set<Department> departments;
+	private Set<Department> departments = new HashSet<Department>();
 	
 	@OneToMany(mappedBy = "hospital")
-	private Set<Laboratory> laboratories;
+	private Set<Laboratory> laboratories = new HashSet<Laboratory>();
 	
 	@OneToMany(mappedBy = "hospital")
-	private Set<Room> rooms;
+	private Set<Room> rooms = new HashSet<Room>();
 	
 	@OneToMany(mappedBy = "hospital")
-	private Set<Doctor> doctors;
+	private Set<Doctor> doctors = new HashSet<Doctor>();
 	
 	@OneToMany(mappedBy = "hospital")
-	private Set<Patient> patients;
+	private Set<Patient> patients = new HashSet<Patient>();
 
 }
