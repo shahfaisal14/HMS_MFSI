@@ -3,8 +3,10 @@
  */
 package com.mfsi.hm.daotier.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -35,6 +37,6 @@ public class MedicalTest extends BaseDataModel {
 	@Column(name = "charges")
 	private Long charges;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private Laboratory laboratory;
 }

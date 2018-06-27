@@ -15,7 +15,7 @@ public enum ResponseType {
 	SUCCESS("SUCCESS");
 	
 	private String responseType;
-
+	
 	private ResponseType(String responseType) {
 		this.responseType = responseType;
 	}

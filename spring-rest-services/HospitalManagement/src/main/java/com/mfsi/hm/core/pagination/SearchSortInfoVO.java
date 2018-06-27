@@ -31,4 +31,6 @@ public class SearchSortInfoVO implements Serializable {
 	
 	private String sortingOrder;
 	
+	private String filterValue;
+	
 }

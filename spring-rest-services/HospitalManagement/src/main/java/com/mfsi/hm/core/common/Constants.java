@@ -47,6 +47,7 @@ public class Constants {
 	public static final String ERROR_CODE_PARAM_EXCEPTION = "ERR 005";
 	public static final String ERROR_MESSAGE_PARAM_EXCEPTION = "missing.param";
 	public static final String ERROR_CODE_ACCESS_LEVEL = "ERR 006";
+	public static final String ERROR_MESSAGE_ACCESS_LEVEL = "Your access level is not enough to perform this action.";
 	public static final String ERROR_MESSAGE_ACCESS_LEVEL_USER_CREATE = "error.access.level.user.create";
 	public static final String ERROR_CODE_AES_ENCRYPTION= "ERR 007";
 	
@@ -56,6 +57,9 @@ public class Constants {
 	
 	public static final String FORGOT_PASSWORD_SUBJECT = "forgot.password.email.subject";
 	public static final String FORGOT_PASSWORD_BODY = "forgot.password.email.body";
+	
+	public static final String CREATE_USER_SUBJECT = "create.user.email.subject";
+	public static final String CREATE_USER_BODY = "create.user.email.body";
 	
 	// API specific messages
 	public static final String ERROR_HOSPITAL_SAVE = "error.hospital.save";
@@ -68,6 +72,10 @@ public class Constants {
 	public static final String PASSWORD_CHANGED_FAILURE = "change.password.failure" ;
 	public static final String CHANGE_PASSWORD_MAIL_SUCCESS = "password.mail.success";
 	public static final String CHANGE_PASSWORD_MAIL_FAILURE = "password.mail.failure";
+	public static final String CREATE_USER_MAIL_SUCCESS = "create.user.mail.success";
+	public static final String CREATE_USER_MAIL_FAILURE = "create.user.mail.failure";
+	
+	public static final String CREATE_USER_LOGIN_FAILURE = "create.user.login.failure";
 	
 	// Base Controller Messages
 	public static final String TOKEN_ERROR = "TOKEN_ERROR";
@@ -76,4 +84,11 @@ public class Constants {
 	
 	public static final String AUTHERIZATION_ERROR_MESSAGE = "Not able to get supported role list for this API.";
 	public static final String ACCESS_ERROR_MESSAGE = "You are not autherized to call this API.";
+	
+	// Date Formats
+	public static final String MM_DD_YYYY_DATE_FORMAT = "MM/dd/yyyy";
+	public static final String MM_DD_YYYY_HH_MM_SS_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
+	
+	// CORS Access-Control-Allow-Methods
+	public static final String OPTIONS = "OPTIONS";
 }

@@ -38,27 +38,12 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserHelper userHelper;
 	
-	
 	@RequestMapping(value="/doLogin", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<RestResponseVO> doLogin(@RequestBody LoginVO loginVO) {
 		ResponseEntity<RestResponseVO> response = null;
 		RestResponseVO responseVO = null;
 		
 		responseVO = userHelper.doLogin(loginVO);
-		response = new ResponseEntity<RestResponseVO>(responseVO, HttpStatus.OK);
-		
-		return response;
-	}
-	
-	@RequestMapping(value="/create", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<RestResponseVO> createUser(@RequestBody UserVO userVO){
-		
-		ResponseEntity<RestResponseVO> response = null;
-		RestResponseVO responseVO = null;
-		
-		UserVO loggedInUser = LoggedInUserContext.getUser();
-		
-		responseVO = userHelper.createUser(loggedInUser, userVO);
 		response = new ResponseEntity<RestResponseVO>(responseVO, HttpStatus.OK);
 		
 		return response;

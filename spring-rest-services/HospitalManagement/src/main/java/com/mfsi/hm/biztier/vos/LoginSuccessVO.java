@@ -17,7 +17,6 @@ import lombok.Data;
 @Data
 public class LoginSuccessVO implements Serializable {
 	
-	@Transient
 	private static final long serialVersionUID = -2358093123264461528L;
 	
 	private String message;

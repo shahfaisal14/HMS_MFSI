@@ -8,20 +8,20 @@ package com.mfsi.hm.biztier.vos;
  *
  */
 public enum RoleAccessLevel {
-	ADMIN("admin", "1"),
-	HOSPITAL_HEAD("hospitalHead", "2"),
-	DOCTOR("doctor", "3"),
-	PATIENT("patient", "4");
+	ADMIN("admin", 1),
+	HEAD("head", 2),
+	DOCTOR("doctor", 3),
+	PATIENT("patient", 4);
 	
-	private String accessLevel;
 	private String role;
+	private Integer accessLevel;
 	
-	private RoleAccessLevel(String role, String accessLevel) {
+	private RoleAccessLevel(String role, Integer accessLevel) {
 		this.role = role;
 		this.accessLevel = accessLevel;
 	}
 	
-	public String getAccessLevel(){
+	public Integer getAccessLevel(){
 		return this.accessLevel;
 	}
 	
@@ -29,7 +29,7 @@ public enum RoleAccessLevel {
 		return this.role;
 	}
 	
-	public static String getAccessLevelFromRoleName(String role){
+	public static Integer getAccessLevelFromRoleName(String role){
 		return RoleAccessLevel.valueOf(role).getAccessLevel();
 	}
 	

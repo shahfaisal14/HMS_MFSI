@@ -3,6 +3,8 @@
  */
 package com.mfsi.hm.daotier.services;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,20 @@ public class HospitalDataServiceImpl implements HospitalDataService {
 		Hospital hospital = null;
 		if(StringUtils.isNotBlank(name)){
 			hospital = hospitalRepository.findByName(name);
+		}
+		return hospital;
+	}
+
+	@Override
+	public List<Hospital> getHospitalsList() {
+		return hospitalRepository.findAll();
+	}
+
+	@Override
+	public Hospital getHospitalById(Long dataStoreId) {
+		Hospital hospital = null;
+		if(dataStoreId != null){
+			hospital = hospitalRepository.findByDataStoreId(dataStoreId);
 		}
 		return hospital;
 	}

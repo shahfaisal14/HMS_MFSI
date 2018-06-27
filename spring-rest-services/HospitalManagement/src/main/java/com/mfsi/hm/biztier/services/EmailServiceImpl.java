@@ -36,7 +36,7 @@ public class EmailServiceImpl implements EmailService {
 	        emailSender.send(message);
 			isMailSent = true;
 		} catch (MailException e) {
-			logger.error("Not able to send forgot password email.");
+			logger.error("Not able to send email.");
 			logger.error(e.getMessage(), e);
 		}
 		return isMailSent;

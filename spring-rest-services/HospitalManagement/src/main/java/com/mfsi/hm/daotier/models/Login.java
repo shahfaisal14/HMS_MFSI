@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import com.mfsi.hm.core.common.BaseDataModel;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author shah
@@ -23,6 +24,7 @@ import lombok.Data;
  */
 @Entity
 @Data
+@NoArgsConstructor
 public class Login extends BaseDataModel {
 	
 	@Transient
@@ -47,13 +49,6 @@ public class Login extends BaseDataModel {
 	@Column(name = "expiryDuration", nullable = true)
 	private Long expiryDuration;
 
-	@Column(name = "secretKey", nullable = true, length = 100)
-	private String secretKey;
-	
-	public Login(){
-		
-	}
-	
 	public Login(String createdBy, String modifiedBy, Date createdDate, Date modfiedDate, String systemOfRecordX,
 			Long versionNumber) {
 		super(createdBy, modifiedBy, createdDate, modfiedDate, systemOfRecordX, versionNumber);

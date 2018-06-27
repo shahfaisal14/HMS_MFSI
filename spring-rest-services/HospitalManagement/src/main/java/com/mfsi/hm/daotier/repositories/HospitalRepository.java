@@ -17,5 +17,7 @@ import com.mfsi.hm.daotier.models.Hospital;
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
 	
 	public Hospital findByName(String name);
+
+	public Hospital findByDataStoreId(Long dataStoreId);
 	
 }

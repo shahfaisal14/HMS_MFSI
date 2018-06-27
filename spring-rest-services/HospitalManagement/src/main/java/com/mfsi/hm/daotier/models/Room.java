@@ -5,8 +5,11 @@ package com.mfsi.hm.daotier.models;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -41,7 +44,8 @@ public class Room extends BaseDataModel {
 	@Column(name = "chargesPerDay")
 	private String chargesPerDay;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.REFRESH)
+	@JoinColumn(name="hospital_data_store_id", nullable=false)
 	Hospital hospital;
 	
 	@OneToMany(mappedBy = "room")

@@ -6,6 +6,11 @@ package com.mfsi.hm.biztier.services;
 import static com.mfsi.hm.core.common.Constants.APP_LOCALE;
 import static com.mfsi.hm.core.common.Constants.CHANGE_PASSWORD_MAIL_FAILURE;
 import static com.mfsi.hm.core.common.Constants.CHANGE_PASSWORD_MAIL_SUCCESS;
+import static com.mfsi.hm.core.common.Constants.CREATE_USER_BODY;
+import static com.mfsi.hm.core.common.Constants.CREATE_USER_LOGIN_FAILURE;
+import static com.mfsi.hm.core.common.Constants.CREATE_USER_MAIL_FAILURE;
+import static com.mfsi.hm.core.common.Constants.CREATE_USER_MAIL_SUCCESS;
+import static com.mfsi.hm.core.common.Constants.CREATE_USER_SUBJECT;
 import static com.mfsi.hm.core.common.Constants.ERROR_CODE_ACCESS_DENIED;
 import static com.mfsi.hm.core.common.Constants.ERROR_CODE_INVALID_CREDENTIALS;
 import static com.mfsi.hm.core.common.Constants.ERROR_CODE_TOKEN_EXCEPTION;
@@ -20,14 +25,11 @@ import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_USER_LOGIN_FAILURE
 import static com.mfsi.hm.core.common.Constants.ERROR_MESSAGE_USER_LOGIN_TOKEN_ISSUE;
 import static com.mfsi.hm.core.common.Constants.FORGOT_PASSWORD_BODY;
 import static com.mfsi.hm.core.common.Constants.FORGOT_PASSWORD_SUBJECT;
-import static com.mfsi.hm.core.common.Constants.IS_ACTIVE_USER;
 import static com.mfsi.hm.core.common.Constants.MAX_LOGIN_ATTEMPTS;
 import static com.mfsi.hm.core.common.Constants.PASSWORD_CHANGED_FAILURE;
 import static com.mfsi.hm.core.common.Constants.PASSWORD_CHANGED_SUCCESS;
 import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
 import static com.mfsi.hm.core.common.Constants.TEMP_CODE_EXPIRY_TIME;
-import static com.mfsi.hm.core.common.Constants.USER_CREATE_ERROR;
-import static com.mfsi.hm.core.common.Constants.USER_CREATE_SUCCESS;
 import static com.mfsi.hm.core.common.Constants.USER_LOGGED_OUT;
 import static com.mfsi.hm.core.common.Constants.VERSION_NUMBER;
 
@@ -104,16 +106,20 @@ public class UserServiceImpl implements UserService {
 						bizResponse.setResponseType(ResponseType.SUCCESS);
 						bizResponse.setResponseData(userVO);
 					} else {
-						throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_USER_ACTIVE, null, APP_LOCALE));
+						throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, 
+								SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_USER_ACTIVE, null, APP_LOCALE));
 					}
 				} else {
-					throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_USER_TERMINATED, null, APP_LOCALE));
+					throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, 
+							SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_USER_TERMINATED, null, APP_LOCALE));
 				}
 			} else {
-				throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_USER_EXIST, null, APP_LOCALE));
+				throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, 
+						SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_USER_EXIST, null, APP_LOCALE));
 			}
 		} else {
-			throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_EXIST, null, APP_LOCALE));
+			throw new TokenException(ERROR_CODE_TOKEN_EXCEPTION, 
+					SpringHelper.getMessage(ERROR_MESSAGE_TOKEN_EXIST, null, APP_LOCALE));
 		}
 		
 		return bizResponse;
@@ -121,15 +127,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Boolean saveLoginObject(Login login) {
-		Boolean isLoginObjectSave = Boolean.FALSE;
+		Boolean isLoginObjectSaved = Boolean.FALSE;
 		Login loginSave = null;
 		loginSave = userDataService.saveLogin(login);
 		
 		if(loginSave != null){
-			isLoginObjectSave = Boolean.TRUE;
+			isLoginObjectSaved = Boolean.TRUE;
 		}
 		
-		return isLoginObjectSave;
+		return isLoginObjectSaved;
 	}
 	
 	@Override
@@ -178,30 +184,6 @@ public class UserServiceImpl implements UserService {
 		
 		
 		return bizResponse;
-	}
-	
-	@Override
-	public BizResponseVO createUser(UserVO loggedInUser, UserVO userVO) {
-		
-		BizResponseVO response = new BizResponseVO();
-		User user = convertUserVOToModel(userVO, loggedInUser.getUserId());
-		
-		user.setIsActive(IS_ACTIVE_USER);
-		user.setIsTerminated(false);
-		user.setUserId(user.getEmail());
-		
-		User createdUser = userDataService.saveUser(user);
-		
-		if(createdUser != null){
-			response.setResponseType(ResponseType.SUCCESS);
-			response.setMessage(USER_CREATE_SUCCESS);
-			response.setResponseData(createdUser.getDataStoreId());
-		} else {
-			response.setResponseType(ResponseType.ERROR);
-			response.setMessage(USER_CREATE_ERROR);
-		}
-		
-		return response;
 	}
 
 	@Override
@@ -319,6 +301,52 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
+	@Override
+	public BizResponseVO saveLoginAndMailCredentials(User user){
+		BizResponseVO response = new BizResponseVO();
+		
+		Login login = new Login();
+		SystemUtil.setBaseModelValues(login, user.getUserId(), SYSTEM_OF_RECORDX);
+		String passSalt = StringHelper.randomString(30, Boolean.FALSE, Boolean.TRUE);
+		
+		String password = StringHelper.randomString(10, Boolean.TRUE, Boolean.TRUE);
+		String sha256SaltedPassword = DigestUtils.sha256Hex(password + passSalt);
+		login.setAuthCodeCreatedTime(new Date());
+		login.setExpiryDuration(tempAuthCodeExpiryTime);
+		login.setPassSalt(passSalt);
+		login.setPassword(sha256SaltedPassword);
+		login.setTempAuthCode(null);
+		login.setUser(user);
+		
+		// Save the login object in database
+		Boolean isLoginInfoSaved = saveLoginObject(login);
+	
+		
+		// If login is saved in database then attempt to send mail to created user for login credentials.
+		Boolean isMailSent = Boolean.FALSE;
+		
+		if(isLoginInfoSaved){
+			String subject = SpringHelper.getMessage(CREATE_USER_SUBJECT, null, APP_LOCALE);
+			Object []values = {getUserName(login), login.getUser().getRole().getName(), login.getUser().getUserId(),  password};
+			String emailBody = SpringHelper.getMessage(CREATE_USER_BODY, values, APP_LOCALE);
+			String []toEmails = {user.getEmail()};
+			isMailSent = emailService.sendEMail(toEmails, subject, emailBody);
+			
+			if (Boolean.TRUE.equals(isMailSent)) {
+				response.setResponseType(ResponseType.SUCCESS);
+				response.setMessage(SpringHelper.getMessage(CREATE_USER_MAIL_SUCCESS, null, APP_LOCALE));
+			} else {
+				response.setResponseType(ResponseType.ERROR);
+				response.setMessage(SpringHelper.getMessage(CREATE_USER_MAIL_FAILURE, null, APP_LOCALE));
+			}
+		} else {
+			response.setResponseType(ResponseType.ERROR);
+			response.setMessage(SpringHelper.getMessage(CREATE_USER_LOGIN_FAILURE, null, APP_LOCALE));
+		}
+		
+		return response;
+	}
+
 	private UserVO convertUserModelToVO(User user){
 		UserVO userVO = null;
 		if (user != null) {
@@ -334,39 +362,13 @@ public class UserServiceImpl implements UserService {
 		return userVO;
 	}
 	
-	private User convertUserVOToModel(UserVO userVO, String loggedInUserId){
-		User user = null;
-		if (userVO != null) {
-			user = new User();
-			user.setDataStoreId(userVO.getDataStoreId());
-			user.setFirstName(userVO.getFirstName());
-			user.setMiddleName(userVO.getMiddleName());
-			user.setLastName(userVO.getLastName());
-			user.setUserId(userVO.getUserId());
-			user.setEmail(userVO.getEmail());
-			user.setRole(convertRoleVOToModel(userVO.getRole(), loggedInUserId));
-		}
-		SystemUtil.setBaseModelValues(user, loggedInUserId, SYSTEM_OF_RECORDX);
-		return user;
-	}
-	
 	private RoleVO convertRoleModelToVO(Role role){
 		RoleVO roleVO = new RoleVO();
 		if(role != null){
 			roleVO.setName(role.getName());
-			roleVO.setId(role.getRoleId());
+			roleVO.setId(role.getId());
 		}
 		return roleVO;
-	}
-	
-	private Role convertRoleVOToModel(RoleVO roleVO, String loggedInUserId){
-		Role role = new Role();
-		if(roleVO != null){
-			role.setName(roleVO.getName());
-			role.setRoleId(roleVO.getId());
-		}
-		SystemUtil.setBaseModelValues(role, loggedInUserId, SYSTEM_OF_RECORDX);
-		return role;
 	}
 	
 	private LoginSuccessVO convertLoginSuccessVOToModel(ValidateUserVO validatedUser, Login login) {
@@ -447,7 +449,7 @@ public class UserServiceImpl implements UserService {
 			String authToken = generateToken(userId);
 			validatedUser.setAuthToken(authToken);
 		
-		} else if (login.getTempAuthCode() != null && DigestUtils.sha256Hex(login.getTempAuthCode()).equals(code)) {
+		} else if (login.getTempAuthCode() != null && login.getTempAuthCode().equals(code)) {
 			if(StringHelper.dateTime(login.getAuthCodeCreatedTime(), login.getExpiryDuration()).compareTo(StringHelper.dateTime(new Date(), 0L)) > 0){
 				userDataService.removeLoginAttempts(userId);
 				
@@ -505,5 +507,4 @@ public class UserServiceImpl implements UserService {
 		token = userDataService.saveToken(token);
 		return token;
 	}
-
 }
