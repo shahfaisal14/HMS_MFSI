@@ -22,6 +22,8 @@
     "@angular/platform-browser": "^6.0.2",
     "@angular/platform-browser-dynamic": "^6.0.2",
     "@angular/router": "^6.0.2",
+    "@ng-bootstrap/ng-bootstrap": "^2.1.2",
+    "@types/lodash": "^4.14.110",
     "ag-grid": "^17.1.1",
     "ag-grid-angular": "^17.1.0",
     "angular-2-local-storage": "^2.0.0",

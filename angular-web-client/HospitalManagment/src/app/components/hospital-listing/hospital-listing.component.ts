@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { HospitalService } from '../../services/hospital.service';
-import { Route } from '@angular/compiler/src/core';
 import { Router } from '@angular/router';
+import { Hospital } from '../../models/hospital.model';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-hospital-listing',
@@ -20,29 +21,24 @@ export class HospitalListingComponent implements OnInit {
 
   // ag Grid
   columnDefs = [
-    {headerName: 'name', field: 'name' },
-    {headerName: 'address', field: 'address' },
-    {headerName: 'contact', field: 'contact'},
-    {headerName: 'speciality', field: 'speciality' },
-    {headerName: 'departments', field: 'departments' },
-    {headerName: 'laboratories', field: 'laboratories'},
-    {headerName: 'rooms', field: 'rooms'},
-    {headerName: 'head', field: 'head'}
+    {headerName: 'Hospital Name', field: 'name' },
+    {headerName: 'Address', field: 'address' },
+    {headerName: 'Contact', field: 'contact'},
+    {headerName: 'Speciality', field: 'speciality' },
+    {headerName: 'Departments', field: 'departments' },
+    {headerName: 'Laboratories', field: 'laboratories'},
+    {headerName: 'Rooms', field: 'rooms'},
+    {headerName: 'Head', field: 'head'}
   ];
 
-  rowData = [
-      { name: 'Toyota', address: 'Celica', contact: 35000, speciality: 'No', 
-        departments: 'Ortho, ENT', laboratories: 'lab1, lab2', rooms: '2,4', head:'' },
-        { name: 'Toyota', address: 'Celica', contact: 35000, speciality: 'No', 
-        departments: 'Ortho, ENT', laboratories: 'lab1, lab2', rooms: '2,4', head:'' }
-  ];
+  private rowData: Array<any>;
 
   getHospitals(){
     this.hospitalService.getHospitals()
     .subscribe((item) => {
       let dataFromServer = JSON.parse(item._body);
       if(dataFromServer.responseType == 'SUCCESS'){
-        this.rowData = dataFromServer.responseData;
+        this.rowData = this.prepareHospitalGridData(dataFromServer.responseData);
         console.log(dataFromServer.responseData);
       }
     });
@@ -53,5 +49,40 @@ export class HospitalListingComponent implements OnInit {
       this.router.navigate(['addHospital']);
     }
   }
+  
+  assignHead(){
 
+  }
+
+  private prepareHospitalGridData(hospitals:Array<Hospital>){
+
+    let gridData: Array<any> = new Array();
+    for(let hospital of hospitals){
+      let rowData:any;
+      rowData = hospital;
+
+      let departmentNamesList: Array<string> = new Array<string>();
+      for(let department of hospital.departments){
+        departmentNamesList.push(department.name);
+      }
+      rowData.departments = departmentNamesList.join(", ");
+      
+      let laboratoryNamesList: Array<string> = new Array<string>();
+      for(let laboratory of hospital.laboratories){
+        laboratoryNamesList.push(laboratory.name);
+      }
+      rowData.laboratories = laboratoryNamesList.join(", ");
+
+      let roomsNamesList: Array<string> = new Array<string>();
+      for(let room of hospital.rooms){
+        roomsNamesList.push(room.roomNumber);
+      }
+      rowData.rooms = roomsNamesList.join(", ");
+
+      rowData.speciality = hospital.speciality.name;
+
+      gridData.push(rowData);
+    }
+    return gridData;
+  }
 }

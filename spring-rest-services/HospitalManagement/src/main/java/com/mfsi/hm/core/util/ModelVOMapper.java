@@ -37,8 +37,6 @@ public class ModelVOMapper {
 	@Autowired
 	private static RoleDataService roleDataService;
 	
-	
-	
 	/**
 	 * 
 	 * @param department
@@ -122,7 +120,12 @@ public class ModelVOMapper {
 		return hospitalVO;
 	}
 	
-	public static LaboratoryVO convertLaboratoryVOToModel(Laboratory laboratory){
+	/**
+	 * 
+	 * @param laboratory
+	 * @return laboratoryVO
+	 */
+	public static LaboratoryVO convertLaboratoryModelToVO(Laboratory laboratory){
 		LaboratoryVO laboratoryVO = null;
 		
 		if(laboratory != null){

@@ -44,7 +44,9 @@ public class HospitalDataServiceImpl implements HospitalDataService {
 
 	@Override
 	public List<Hospital> getHospitalsList() {
-		return hospitalRepository.findAll();
+		List<Hospital> hospitals = null;
+		hospitals = hospitalRepository.findAll();
+		return hospitals;
 	}
 
 	@Override

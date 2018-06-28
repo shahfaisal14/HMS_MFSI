@@ -8,7 +8,8 @@
     <div class="pull-right icons-container">
       <i class="fa fa-plus hms-icon" style="margin-left:20px;" 
          (click)="goTo('addHospital')" title="Add Hospital"></i>
-      <i class="fa fa-user hms-icon" style="margin-left:20px;" title="Assign Head"></i>
+      <i class="fa fa-user hms-icon" style="margin-left:20px;"
+         (click)="assignHead()" title="Assign Head"></i>
     </div>
 
 
@@ -19,10 +20,13 @@
             <ag-grid-angular #agGrid style="width: 1620px; height: 800px;" 
                              class="ag-theme-balham"
                              [enableSorting]="true"
+                             [pagination]="true"
+                             [paginationAutoPageSize]="true"
                              [enableFilter]="true"
                              [rowData]="rowData" 
                              [columnDefs]="columnDefs"
                              [getRowHeight]="getRowHeight"
+                             (selectionChanged)="getSelectedRows()"
                              rowSelection='single'>
             </ag-grid-angular>
           </div>

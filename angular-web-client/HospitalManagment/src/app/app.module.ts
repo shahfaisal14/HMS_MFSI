@@ -33,9 +33,11 @@ import * as FusionCharts from 'fusioncharts';
 import * as Charts from 'fusioncharts/fusioncharts.charts';
 import * as FintTheme from 'fusioncharts/themes/fusioncharts.theme.fint';
 import { FusionChartsModule } from 'angular4-fusioncharts';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { AddHospitalComponent } from './components/add-hospital/add-hospital.component';
 import { HttpInterceptorService } from './http/http.interceptor';
 import { HospitalListingComponent } from './components/hospital-listing/hospital-listing.component';
+
 
 // Pass it to fcRoot method to resolve module dependencies
 // Pass FusionCharts core as first argument.
@@ -84,7 +86,8 @@ const appRoutes: Routes = [
     }),
     AgGridModule.withComponents([]),
     NgGridModule,
-    FusionChartsModule
+    FusionChartsModule,
+    NgbModule.forRoot()
   ],
   providers: [
     {
