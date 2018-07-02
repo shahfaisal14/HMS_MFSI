@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create Hospital Head</h4>
+  <div class="pull-right">
+    <i class="fa fa-close hms-icon"
+       (click)="closeModal()"></i></div>
+</div>
+
+<div class="modal-boy" style="margin: 20px 0;min-height: 300px;">
+  <div class="container">
+ 
+    <div class="form-group">
+      <div class="label">First Name</div>
+      <input type="middleName" class="form-control"[(ngModel)]="head.firstName">
+    </div>
+    <div class="form-group">
+      <div class="label">Middle Name</div>
+      <input type="middleName" class="form-control"[(ngModel)]="head.middleName">
+    </div>
+    <div class="form-group">
+      <div class="label">Last Name</div>
+      <input type="email" class="form-control"[(ngModel)]="head.lastName">
+    </div>
+
+    <div class="form-group">
+      <div class="label">Hospital</div>
+      <select [(ngModel)]="this.head.hospital" class="form-control">
+        <option value="hospitalObj" *ngFor="let hospitalObj of hospitalsList">{{hospitalObj.name}}</option>
+      </select>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-success"
+    (click)="submitForm()">
+    Submit Form
+  </button>
+</div>

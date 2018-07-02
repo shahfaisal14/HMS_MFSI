@@ -2,7 +2,8 @@ import { Component, OnInit} from '@angular/core';
 import { HospitalService } from '../../services/hospital.service';
 import { Router } from '@angular/router';
 import { Hospital } from '../../models/hospital.model';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreateHeadComponent } from '../create-head/create-head.component';
 
 @Component({
   selector: 'app-hospital-listing',
@@ -11,7 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 })
 export class HospitalListingComponent implements OnInit {
 
-  constructor(private hospitalService: HospitalService, private router:Router) {
+  constructor(private hospitalService: HospitalService, private router:Router, private modalService: NgbModal) {
 
   }
 
@@ -50,10 +51,23 @@ export class HospitalListingComponent implements OnInit {
     }
   }
   
-  assignHead(){
+  openAssignHeadModal(){
+    const modalRef = this.modalService.open(CreateHeadComponent);
+    modalRef.componentInstance.id = 10;
 
+    modalRef.result
+    .then((result)=>{
+      console.log(result);
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
+  /**
+   * 
+   * @param hospitals 
+   * @description Maps backend hospital list to grid compitible data.
+   */
   private prepareHospitalGridData(hospitals:Array<Hospital>){
 
     let gridData: Array<any> = new Array();

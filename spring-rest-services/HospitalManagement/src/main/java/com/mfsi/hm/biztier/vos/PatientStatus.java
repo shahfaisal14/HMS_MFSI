@@ -9,8 +9,8 @@ package com.mfsi.hm.biztier.vos;
  */
 public enum PatientStatus {
 	
-	APPLIED("APPLIED"),
-	OUT_PATIENT("OUT_PATIENT"),
+	REGISTERED("REGISTER"),
+	OPD_PATIENT("OPD_PATIENT"),
 	ADMITTED("ADMITTED"),
 	BILL_PENDING("BILL_PENDING"),
 	DUES_CLEARANCE("DUES_CLEARANCE"),
