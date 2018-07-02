@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -33,9 +33,14 @@ import * as FusionCharts from 'fusioncharts';
 import * as Charts from 'fusioncharts/fusioncharts.charts';
 import * as FintTheme from 'fusioncharts/themes/fusioncharts.theme.fint';
 import { FusionChartsModule } from 'angular4-fusioncharts';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddHospitalComponent } from './components/add-hospital/add-hospital.component';
 import { HttpInterceptorService } from './http/http.interceptor';
 import { HospitalListingComponent } from './components/hospital-listing/hospital-listing.component';
+import { CreateHeadComponent } from './components/create-head/create-head.component';
+import { DoctorsListingComponent } from './components/doctors-listing/doctors-listing.component';
+
 
 // Pass it to fcRoot method to resolve module dependencies
 // Pass FusionCharts core as first argument.
@@ -57,6 +62,10 @@ const appRoutes: Routes = [
     {
       path      : 'hospitalList',
       component : HospitalListingComponent
+    },
+    {
+      path      : 'doctorsListing',
+      component : DoctorsListingComponent
     }
 ];
 
@@ -69,7 +78,9 @@ const appRoutes: Routes = [
     LeftNavComponent,
     ContentPanelComponent,
     AddHospitalComponent,
-    HospitalListingComponent
+    HospitalListingComponent,
+    CreateHeadComponent,
+    DoctorsListingComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +95,9 @@ const appRoutes: Routes = [
     }),
     AgGridModule.withComponents([]),
     NgGridModule,
-    FusionChartsModule
+    FusionChartsModule,
+    NgbModule.forRoot(),
+    ReactiveFormsModule
   ],
   providers: [
     {
@@ -98,6 +111,9 @@ const appRoutes: Routes = [
   ],
   bootstrap: [
     AppComponent
+  ],
+  entryComponents: [
+    CreateHeadComponent
   ]
 })
 

@@ -5,7 +5,16 @@ package com.mfsi.hm.biztier.services;
 
 import static com.mfsi.hm.core.common.Constants.ERROR_HOSPITAL_SAVE;
 import static com.mfsi.hm.core.common.Constants.SUCCESS_HOSPITAL_SAVE;
-import static com.mfsi.hm.core.util.ModelVOMapper.*;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertDepartmentModelToVO;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertDepartmentVOToModel;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertHospitalModelToVO;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertHospitalVoToModel;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertLaboratoryModelToVO;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertLaboratoryVOToModel;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertRoomModelToVO;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertRoomVOToModel;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertSpecialityModelToVO;
+import static com.mfsi.hm.core.util.ModelVOMapper.convertSpecialityVOToModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -93,11 +102,28 @@ public class HospitalServiceImpl implements HospitalService {
 		BizResponseVO response = new BizResponseVO();
 		
 		List<Hospital> hospitals = hospitalDataService.getHospitalsList();
-		List<HospitalVO> hospitalsVO = new ArrayList<HospitalVO>();
+		List<HospitalVO> hospitalsVO = null;
 		
 		if(hospitals != null){
+			hospitalsVO = new ArrayList<HospitalVO>();
 			for(Hospital hospital : hospitals){
-				hospitalsVO.add(convertHospitalModelToVO(hospital));
+				
+				HospitalVO hospitalVO = convertHospitalModelToVO(hospital);
+				
+				if(hospital.getDepartments() != null){
+					hospitalVO.setDepartments(convertDepartmentsModelToVO(hospital.getDepartments()));
+				}
+				if(hospital.getLaboratories() != null){
+					hospitalVO.setLaboratories(convertLaboratoriesModelToVO(hospital.getLaboratories()));
+				}
+				if(hospital.getRooms() != null){
+					hospitalVO.setRooms(convertRoomsModelToVO(hospital.getRooms()));
+				}
+				if(hospital.getSpeciality() != null){
+					hospitalVO.setSpeciality(convertSpecialityModelToVO(hospital.getSpeciality()));
+				}
+				
+				hospitalsVO.add(hospitalVO);
 			}
 			response.setResponseType(ResponseType.SUCCESS);
 			response.setMessage("List of hospitals fetched successfully.");
@@ -183,5 +209,54 @@ public class HospitalServiceImpl implements HospitalService {
 		}
 		
 		return laboratories;
+	}
+	
+	
+	/**
+	 * 
+	 * @param laboratories
+	 * @return SetOfLaboratoriesVO
+	 */
+	private Set<LaboratoryVO> convertLaboratoriesModelToVO(Set<Laboratory> laboratories){
+		Set<LaboratoryVO> laboratoriesVO = new HashSet<>();
+		
+		for(Laboratory laboratory: laboratories){
+			LaboratoryVO laboratoryVO = convertLaboratoryModelToVO(laboratory);
+			laboratoriesVO.add(laboratoryVO);
+		}
+		
+		return laboratoriesVO;
+	}
+	
+	/**
+	 * 
+	 * @param departments
+	 * @return SetOfDepartmentsVO
+	 */
+	private Set<DepartmentVO> convertDepartmentsModelToVO(Set<Department> departments){
+		Set<DepartmentVO> departmentsVO = new HashSet<>();
+		
+		for(Department laboratory: departments){
+			DepartmentVO laboratoryVO = convertDepartmentModelToVO(laboratory);
+			departmentsVO.add(laboratoryVO);
+		}
+		
+		return departmentsVO;
+	}
+	
+	/**
+	 * 
+	 * @param rooms
+	 * @return SetOfRoomVO
+	 */
+	private Set<RoomVO> convertRoomsModelToVO(Set<Room> rooms){
+		Set<RoomVO> roomsVO = new HashSet<>();
+		
+		for(Room room: rooms){
+			RoomVO roomVO = convertRoomModelToVO(room);
+			roomsVO.add(roomVO);
+		}
+		
+		return roomsVO;
 	}
 }

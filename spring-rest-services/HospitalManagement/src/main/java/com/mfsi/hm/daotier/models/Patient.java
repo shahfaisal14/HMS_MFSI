@@ -40,6 +40,12 @@ public class Patient extends User {
 	@Column(name = "patientStatus")
 	private PatientStatus patientStatus;
 	
+	@Column(name="duePayment")
+	private Float duePayment;
+	
+	@Column(name="totalBillingAmount")
+	private Float totalBillingAmount;
+	
 	@Column(name = "appointmentDate")
 	private Date appointmentDate;
 	

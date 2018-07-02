@@ -1,9 +1,9 @@
 export class Room{
-    private roomNumber:string;
-    private totalBeds:number;
-    private occupiedBeds:number;
-    private availableBeds:number;
-    private chargesPerDay:number;
+    roomNumber:string;
+    totalBeds:number;
+    occupiedBeds:number;
+    availableBeds:number;
+    chargesPerDay:number;
 
     constructor(roomNumber:string, totalBeds:number, occupiedBeds:number, availableBeds:number, chargesPerDay:number){
         this.availableBeds = availableBeds;
