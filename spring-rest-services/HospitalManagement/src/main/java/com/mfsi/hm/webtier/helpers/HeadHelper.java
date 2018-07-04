@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mfsi.hm.biztier.services.HeadService;
-import com.mfsi.hm.biztier.vos.DoctorVO;
 import com.mfsi.hm.biztier.vos.HeadVO;
 import com.mfsi.hm.biztier.vos.RoleAccessLevel;
 import com.mfsi.hm.biztier.vos.UserVO;
@@ -64,10 +63,6 @@ public class HeadHelper {
 					SpringHelper.getMessage(ERROR_MESSAGE_PARAM_EXCEPTION, values, APP_LOCALE));
 		} else if(StringUtils.isBlank(headVO.getEmail())){
 			Object[] values = { "email" };
-			throw new RequiredParameterException(ERROR_MESSAGE_PARAM_EXCEPTION, 
-					SpringHelper.getMessage(ERROR_MESSAGE_PARAM_EXCEPTION, values, APP_LOCALE));
-		} else if(headVO.getDateOfBirth() == null){
-			Object[] values = { "dateOfBirth" };
 			throw new RequiredParameterException(ERROR_MESSAGE_PARAM_EXCEPTION, 
 					SpringHelper.getMessage(ERROR_MESSAGE_PARAM_EXCEPTION, values, APP_LOCALE));
 		} else {

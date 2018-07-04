@@ -46,8 +46,8 @@ export class HospitalListingComponent implements OnInit {
   }
 
   goTo(route:string){
-    if(route == 'addHospital'){
-      this.router.navigate(['addHospital']);
+    if(route == 'hospital/new'){
+      this.router.navigate(['hospital/new']);
     }
   }
   

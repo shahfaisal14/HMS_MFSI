@@ -25,6 +25,8 @@ public class LoginSuccessVO implements Serializable {
 	
 	private String userCode;
 	
+	private String userRole;
+	
 	private String authToken;
 		
 	private List<EntitledModuleVO> entitledModules;

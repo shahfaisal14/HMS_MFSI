@@ -40,6 +40,7 @@ import { HttpInterceptorService } from './http/http.interceptor';
 import { HospitalListingComponent } from './components/hospital-listing/hospital-listing.component';
 import { CreateHeadComponent } from './components/create-head/create-head.component';
 import { DoctorsListingComponent } from './components/doctors-listing/doctors-listing.component';
+import { HeadService } from './services/head.service';
 
 
 // Pass it to fcRoot method to resolve module dependencies
@@ -52,19 +53,19 @@ const appRoutes: Routes = [
       component : LoginComponent
     },
     {
-      path      : 'dashboard',
+      path      : 'admin/dashboard',
       component : DashboardComponent
     },
     {
-      path      : 'addHospital',
+      path      : 'hospital/new',
       component : AddHospitalComponent
     },
     {
-      path      : 'hospitalList',
+      path      : 'hospitals',
       component : HospitalListingComponent
     },
     {
-      path      : 'doctorsListing',
+      path      : 'doctors',
       component : DoctorsListingComponent
     }
 ];
@@ -107,7 +108,8 @@ const appRoutes: Routes = [
     },
     LoginService,
     HospitalService,
-    HttpInterceptorService
+    HttpInterceptorService,
+    HeadService
   ],
   bootstrap: [
     AppComponent

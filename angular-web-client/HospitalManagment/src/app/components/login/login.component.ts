@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       let dataFromServer = JSON.parse(item._body);
       if(dataFromServer.responseType == 'SUCCESS'){
         this.setLoginEssentials(dataFromServer);
-        this.router.navigate(['dashboard']);
+        this.router.navigate(['admin/dashboard']);
       }
     });
   }
@@ -61,5 +61,6 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('message', dataFromServer.responseData.message);
     localStorage.setItem('userCode', dataFromServer.responseData.userCode);
     localStorage.setItem('userName', dataFromServer.responseData.userName);
+    localStorage.setItem('userRole', dataFromServer.responseData.userRole);
   }
 }

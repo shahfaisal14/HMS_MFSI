@@ -376,6 +376,7 @@ public class UserServiceImpl implements UserService {
 		LoginSuccessVO loginSuccessVO = new LoginSuccessVO();
 		loginSuccessVO.setUserName(getUserName(login));
 		loginSuccessVO.setUserCode(user.getUserId());
+		loginSuccessVO.setUserRole(user.getRole().getId());
 		loginSuccessVO.setAuthToken(validatedUser.getAuthToken());
 		getEntitledModule(loginSuccessVO);
 		return loginSuccessVO;

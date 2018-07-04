@@ -9,7 +9,7 @@ import { HttpInterceptorService } from '../http/http.interceptor';
 })
 export class LoginService {
 
-  constructor(public http: Http, public localStorageService: LocalStorageService) {
+  constructor(public http: Http) {
   }
 
   doLogin(loginModel: LoginModel){

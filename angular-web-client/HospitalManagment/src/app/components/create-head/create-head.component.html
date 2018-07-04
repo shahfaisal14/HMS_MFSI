@@ -10,21 +10,28 @@
  
     <div class="form-group">
       <div class="label">First Name</div>
-      <input type="middleName" class="form-control"[(ngModel)]="head.firstName">
+      <input type="text" class="form-control"[(ngModel)]="head.firstName">
     </div>
+
     <div class="form-group">
       <div class="label">Middle Name</div>
-      <input type="middleName" class="form-control"[(ngModel)]="head.middleName">
+      <input type="text" class="form-control"[(ngModel)]="head.middleName">
     </div>
+
     <div class="form-group">
       <div class="label">Last Name</div>
-      <input type="email" class="form-control"[(ngModel)]="head.lastName">
+      <input type="text" class="form-control"[(ngModel)]="head.lastName">
+    </div>
+
+    <div class="form-group">
+      <div class="label">Email</div>
+      <input type="email" class="form-control"[(ngModel)]="head.email">
     </div>
 
     <div class="form-group">
       <div class="label">Hospital</div>
       <select [(ngModel)]="this.head.hospital" class="form-control">
-        <option value="hospitalObj" *ngFor="let hospitalObj of hospitalsList">{{hospitalObj.name}}</option>
+        <option [ngValue]="hospitalObj" *ngFor="let hospitalObj of hospitalsList">{{hospitalObj.name}}</option>
       </select>
     </div>
 
@@ -33,7 +40,7 @@
 
 <div class="modal-footer">
   <button class="btn btn-success"
-    (click)="submitForm()">
+    (click)="createHead()">
     Submit Form
   </button>
 </div>

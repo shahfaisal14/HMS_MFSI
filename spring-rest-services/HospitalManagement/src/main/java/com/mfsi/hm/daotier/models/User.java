@@ -46,6 +46,9 @@ public class User extends BaseDataModel {
 	@Column(name = "email", nullable = false, length = 1024)
 	private String email;
 	
+	@Column(name = "dateOfBirth", nullable=true, unique=false)
+	private Date dateOfBirth;
+	
 	@Column(name = "description", nullable = true, length = 4096)
 	private String description;
 	

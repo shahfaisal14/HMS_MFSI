@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mfsi.hm.biztier.vos.HospitalVO;
-import com.mfsi.hm.biztier.vos.UserVO;
 import com.mfsi.hm.core.common.BaseController;
-import com.mfsi.hm.core.filters.LoggedInUserContext;
-import com.mfsi.hm.core.pagination.FilterInfoVO;
 import com.mfsi.hm.core.responses.RestResponseVO;
 import com.mfsi.hm.webtier.helpers.HospitalHelper;
 

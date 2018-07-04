@@ -5,6 +5,7 @@ import { Head } from '../../models/head.model';
 import * as _ from 'lodash'; 
 import { HospitalService } from '../../services/hospital.service';
 import { Hospital } from '../../models/hospital.model';
+import { HeadService } from '../../services/head.service';
 
 @Component({
   selector: 'app-create-head',
@@ -16,14 +17,15 @@ export class CreateHeadComponent implements OnInit {
 
   @Input() id: number;
   // /createHeadForm: FormGroup = new FormGroup();
-  head: Head = new Head('', '', '', '', null);
+  head: Head = new Head('', '', '', '', '', null, null);
   hospitalsList: Array<Hospital> = new Array<Hospital>();
   selectedHospital: Hospital;
 
   constructor(
     public ngbActiveModal: NgbActiveModal, 
     public formBuilder: FormBuilder,
-    private hospitalService: HospitalService) {
+    private hospitalService: HospitalService,
+    private headService: HeadService) {
 
   }
 
@@ -31,9 +33,14 @@ export class CreateHeadComponent implements OnInit {
     this.getHospitals();
   }
 
-  private submitForm() {
-    console.log("");
-    console.log(this.head);
+  private createHead() {
+    this.headService.createHead(this.head)
+    .subscribe((item)=>{
+      let dataFromServer = JSON.parse(item._body);
+      if(dataFromServer.responseType == 'SUCCESS'){
+        alert(dataFromServer.message);
+      }
+    });
   }
 
   closeModal(){

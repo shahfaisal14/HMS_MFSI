@@ -6,15 +6,12 @@ package com.mfsi.hm.core.util;
 import static com.mfsi.hm.core.common.Constants.IS_ACTIVE_HOSPITAL;
 import static com.mfsi.hm.core.common.Constants.SYSTEM_OF_RECORDX;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.mfsi.hm.biztier.vos.DepartmentVO;
 import com.mfsi.hm.biztier.vos.DoctorVO;
 import com.mfsi.hm.biztier.vos.HeadVO;
 import com.mfsi.hm.biztier.vos.HospitalVO;
 import com.mfsi.hm.biztier.vos.LaboratoryVO;
 import com.mfsi.hm.biztier.vos.PatientVO;
-import com.mfsi.hm.biztier.vos.RoleAccessLevel;
 import com.mfsi.hm.biztier.vos.RoleVO;
 import com.mfsi.hm.biztier.vos.RoomVO;
 import com.mfsi.hm.biztier.vos.SpecialityVO;
@@ -27,17 +24,12 @@ import com.mfsi.hm.daotier.models.Patient;
 import com.mfsi.hm.daotier.models.Role;
 import com.mfsi.hm.daotier.models.Room;
 import com.mfsi.hm.daotier.models.Speciality;
-import com.mfsi.hm.daotier.services.RoleDataService;
 
 /**
  * @author shah
  *
  */
 public class ModelVOMapper {
-
-	
-	@Autowired
-	private static RoleDataService roleDataService;
 	
 	/**
 	 * 
@@ -227,62 +219,6 @@ public class ModelVOMapper {
 		return department;
 	}
 	
-	/**
-	 * 
-	 * @param doctorVO
-	 * @param loggedInUserId
-	 * @return Doctor
-	 */
-	public static Doctor convertDoctorVOToModel(DoctorVO doctorVO, String loggedInUserId) {
-		Doctor doctor = null;
-		if(doctorVO != null){
-			doctor = new Doctor();
-			doctor.setDataStoreId(doctorVO.getDataStoreId());
-			doctor.setUserId(doctorVO.getEmail());
-			doctor.setEmail(doctorVO.getEmail());
-			doctor.setFirstName(doctorVO.getFirstName());
-			doctor.setMiddleName(doctorVO.getMiddleName());
-			doctor.setLastName(doctorVO.getLastName());
-			doctor.setQualifications(doctorVO.getQualifications());
-			doctor.setIsActive(true);
-			doctor.setIsTerminated(false);
-			
-			Role role = roleDataService.getRoleById(RoleAccessLevel.DOCTOR.getRole());
-			doctor.setRole(role);
-			
-			SystemUtil.setBaseModelValues(doctor, loggedInUserId, SYSTEM_OF_RECORDX);
-		}
-		
-		return doctor;
-	}
-	
-	/**
-	 * 
-	 * @param headVO
-	 * @param loggedInUserId
-	 * @return Head
-	 */
-	public static Head convertHeadVOToModel(HeadVO headVO, String loggedInUserId){
-		Head head = null;
-		
-		if(headVO != null){
-			head = new Head();
-			head.setDataStoreId(headVO.getDataStoreId());
-			head.setUserId(headVO.getEmail());
-			head.setEmail(headVO.getEmail());
-			head.setFirstName(headVO.getFirstName());
-			head.setMiddleName(headVO.getMiddleName());
-			head.setLastName(headVO.getLastName());
-			head.setIsActive(true);
-			head.setIsTerminated(false);
-			
-			Role role = roleDataService.getRoleById(RoleAccessLevel.HEAD.getRole());
-			head.setRole(role);
-			
-			SystemUtil.setBaseModelValues(head, loggedInUserId, SYSTEM_OF_RECORDX);
-		}
-		return head;
-	}
 	
 	/**
 	 * 
@@ -321,32 +257,6 @@ public class ModelVOMapper {
 			SystemUtil.setBaseModelValues(laboratory, loggedInUserId, SYSTEM_OF_RECORDX);
 		}
 		return laboratory;
-	}
-	
-	/**
-	 * 
-	 * @param patientVO
-	 * @param loggedInUserId
-	 * @return Patient
-	 */
-	public static Patient converPatientVOToModel(PatientVO patientVO, String loggedInUserId){
-		Patient patient = null;
-		if(patientVO != null){
-			patient = new Patient();
-			patient.setDataStoreId(patientVO.getDataStoreId());
-			patient.setUserId(patientVO.getEmail());
-			patient.setEmail(patientVO.getEmail());
-			patient.setFirstName(patientVO.getFirstName());
-			patient.setMiddleName(patientVO.getMiddleName());
-			patient.setLastName(patientVO.getLastName());
-			patient.setIsActive(true);
-			patient.setIsTerminated(false);
-			
-			Role role = roleDataService.getRoleById(RoleAccessLevel.PATIENT.getRole());
-			patient.setRole(role);
-			SystemUtil.setBaseModelValues(patient, loggedInUserId, SYSTEM_OF_RECORDX);
-		}
-		return patient;
 	}
 	
 	/**
