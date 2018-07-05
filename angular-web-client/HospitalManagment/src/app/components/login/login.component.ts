@@ -30,7 +30,9 @@ export class LoginComponent implements OnInit {
       let dataFromServer = JSON.parse(item._body);
       if(dataFromServer.responseType == 'SUCCESS'){
         this.setLoginEssentials(dataFromServer);
-        this.router.navigate(['admin/dashboard']);
+        let userRole = dataFromServer.responseData.userRole;
+        let userDashboardUrl = userRole + '/dashboard';
+        this.router.navigate([userDashboardUrl]);
       }
     });
   }

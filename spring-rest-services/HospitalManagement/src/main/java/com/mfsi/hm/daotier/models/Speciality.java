@@ -28,8 +28,5 @@ public class Speciality extends BaseDataModel {
 	
 	@Column(name="description", nullable = true, length = 4096)
 	private String description;
-	
-	@OneToOne(mappedBy="speciality")
-	private Hospital hospital;
 
 }

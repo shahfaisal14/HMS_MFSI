@@ -41,6 +41,9 @@ import { HospitalListingComponent } from './components/hospital-listing/hospital
 import { CreateHeadComponent } from './components/create-head/create-head.component';
 import { DoctorsListingComponent } from './components/doctors-listing/doctors-listing.component';
 import { HeadService } from './services/head.service';
+import { HeadDashboardComponent } from './components/head-dashboard/head-dashboard.component';
+import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-dashboard.component';
+import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
 
 
 // Pass it to fcRoot method to resolve module dependencies
@@ -67,6 +70,18 @@ const appRoutes: Routes = [
     {
       path      : 'doctors',
       component : DoctorsListingComponent
+    },
+    {
+      path      : 'head/dashboard',
+      component : HeadDashboardComponent
+    },
+    {
+      path      : 'doctor/dashboard',
+      component : DoctorDashboardComponent
+    },
+    {
+      path      : 'patient/dashboard',
+      component : PatientDashboardComponent
     }
 ];
 
@@ -81,7 +96,10 @@ const appRoutes: Routes = [
     AddHospitalComponent,
     HospitalListingComponent,
     CreateHeadComponent,
-    DoctorsListingComponent
+    DoctorsListingComponent,
+    HeadDashboardComponent,
+    DoctorDashboardComponent,
+    PatientDashboardComponent
   ],
   imports: [
     BrowserModule,

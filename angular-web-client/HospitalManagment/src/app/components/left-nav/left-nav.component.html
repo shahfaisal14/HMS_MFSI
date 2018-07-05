@@ -30,16 +30,67 @@
 
     <!-- HEAD LEFT MENU PANEL -->
     <div *ngIf="userRole == 'head'">
+      <div class="left-menu-item-container" (click)="goTo('headDashboard')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-dashboard icon"></i><span>Dashboard</span>
+        </div>
+      </div>
 
+      <div class="left-menu-item-container" (click)="goTo('rooms')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-bed icon"></i><span>Room Details</span>
+        </div>
+      </div>
+
+      <div class="left-menu-item-container" (click)="goTo('headPatients')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-wheelchair icon"></i><span>Patients Details</span>
+        </div>
+      </div>
     </div>
 
     <!-- DOCTOR LEFT MENU PANEL -->
     <div *ngIf="userRole == 'doctor'">
+      <div class="left-menu-item-container" (click)="goTo('doctorDashboard')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-dashboard icon"></i><span>Dashboard</span>
+        </div>
+      </div>
 
+      <div class="left-menu-item-container" (click)="goTo('doctorPatients')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-wheelchair icon"></i><span>Patients</span>
+        </div>
+      </div>
     </div>
 
     <!-- PATIENT LEFT MENU PANEL -->
     <div *ngIf="userRole == 'patient'">
+      
+      <div class="left-menu-item-container" (click)="goTo('patientDashboard')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-dashboard icon"></i><span>Dashboard</span>
+        </div>
+      </div>
+
+      <div class="left-menu-item-container" (click)="goTo('prescriptions')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-file icon"></i><span>Prescriptions</span>
+        </div>
+      </div>
+
+
+      <div class="left-menu-item-container" (click)="goTo('reports')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-bar-chart icon"></i><span>Test Reports</span>
+        </div>
+      </div>
+
+      <div class="left-menu-item-container" (click)="goTo('payments')">
+        <div class="left-menu-item-inner-container">
+          <i class="fa fa-money icon"></i><span>Payments</span>
+        </div>
+      </div>
 
     </div>
 

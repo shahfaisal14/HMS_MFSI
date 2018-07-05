@@ -15,7 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import com.mfsi.hm.biztier.vos.PatientStatus;
-import com.mfsi.hm.core.common.BaseDataModel;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
